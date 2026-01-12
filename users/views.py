@@ -325,10 +325,43 @@ def register_user(request):
                     is_active=False
                 )
             elif account_type == "recruiter":
+                # Generate placeholder profile pic based on first letter
+                from PIL import Image, ImageDraw, ImageFont
+                from io import BytesIO
+                from django.core.files.base import ContentFile
+            
+                # Create an image
+                first_letter = full_name[0].upper()
+                img_size = 200
+                bg_color = "#E1A50C"  # Same branding color
+                text_color = "#FFFFFF"
+            
+                img = Image.new('RGB', (img_size, img_size), color=bg_color)
+                draw = ImageDraw.Draw(img)
+            
+                try:
+                    font = ImageFont.truetype("arial.ttf", 100)
+                except:
+                    font = ImageFont.load_default()
+            
+                w, h = draw.textsize(first_letter, font=font)
+                draw.text(
+                    ((img_size - w) / 2, (img_size - h) / 2),
+                    first_letter,
+                    fill=text_color,
+                    font=font
+                )
+            
+                # Save to in-memory file
+                img_io = BytesIO()
+                img.save(img_io, format='PNG')
+                img_content = ContentFile(img_io.getvalue(), f"{full_name}_avatar.png")
+            
                 user = Recruiter.objects.create(
                     full_name=full_name,
                     email=email,
                     password=hashed_password,
+                    photo=img_content,   # assign the generated image
                     is_active=False
                 )
             else:
