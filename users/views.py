@@ -219,7 +219,7 @@ def resend_otp(request):
                     f"Do not share this OTP with anyone.\n\n"
                     f"— SkillConnect Team"
                 ),
-                from_email="noreply@skillconnect.com",
+                from_email="projectsinfo697@gmail.com",
                 recipient_list=[email],
                 fail_silently=False,
             )
@@ -339,7 +339,7 @@ def register_user(request):
             send_mail(
                 subject="SkillConnect OTP Verification",
                 message=f"Hello {full_name},\nYour OTP for SkillConnect signup is: {otp_code}",
-                from_email="noreply@skillconnect.com",
+                from_email="projectsinfo697@gmail.com",
                 recipient_list=[email],
                 fail_silently=False
             )
