@@ -735,7 +735,7 @@ def apply_job(request, job_id):
         
         return redirect('jobs_list')
 
-    return render(request, 'apply_job_form.html', {'job': job})
+    return render(request, 'apply_job_form.html', {'job': job,'freelancer':freelancer})
 from django.shortcuts import render, redirect
 
 def jobs_applied(request):
