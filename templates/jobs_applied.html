@@ -71,20 +71,24 @@
 
         /* Chat window */
         #chatbox {
-            position: fixed;
-            bottom: 100px;
-            right: 30px;
-            width: 350px;
-            max-height: 500px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            z-index: 1000;
-            animation: slideUp 0.3s ease-out;
-        }
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);   /* perfect center */
+    
+    width: 380px;
+    max-width: 90%;
+    height: 70vh;
+
+    display: none;
+    flex-direction: column;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+    overflow: hidden;
+    z-index: 9999;
+}
+
 
         @keyframes slideUp {
             from { transform: translateY(50px); opacity:0; }
