@@ -169,8 +169,9 @@ form.addEventListener("submit", async function(e) {
         return;
     }
 
-    // Use the email returned from server for redirect
-    window.location.href = "{% url 'verify_otp_page' %}?email=" + encodeURIComponent(result.email);
+    // Only use email if registration was successful
+    const email = result.email;
+    window.location.href = "{% url 'verify_otp_page' %}?email=" + encodeURIComponent(email);
 });
 
 </script>
