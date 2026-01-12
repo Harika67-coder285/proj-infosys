@@ -122,18 +122,23 @@ body {
 
 #chatbox {
     position: fixed;
-    top: 120px;                 /* SAME AS HEADER HEIGHT */
-    right: 30px;
-    width: 360px;
-    height: calc(100vh - 220px); /* full screen minus header */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);   /* perfect center */
+    
+    width: 380px;
+    max-width: 90%;
+    height: 70vh;
+
     display: none;
     flex-direction: column;
     background: white;
     border-radius: 16px;
     box-shadow: 0 12px 40px rgba(0,0,0,0.35);
     overflow: hidden;
-    z-index: 9999;             /* ABOVE HEADER */
+    z-index: 9999;
 }
+
 
 
 #chat-header {
