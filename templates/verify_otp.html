@@ -2,149 +2,196 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Verify OTP</title>
-  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-  <style>
-    .letter-spacing {
-      letter-spacing: 0.4em;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Verify OTP</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+<style>
+body{
+    background: linear-gradient(135deg,#fff8e1,#fff3cd);
+    font-family: "Segoe UI",system-ui;
+}
+
+/* Center card */
+.otp-wrapper{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+/* Card */
+.otp-card{
+    background:white;
+    width:100%;
+    max-width:520px;
+    border-radius:18px;
+    padding:40px;
+    box-shadow:0 20px 50px rgba(0,0,0,.15);
+}
+
+/* Heading */
+.otp-card h4{
+    font-size:1.9rem;
+    font-weight:700;
+}
+
+/* OTP input */
+#otp{
+    height:70px;
+    font-size:32px;
+    letter-spacing:0.6em;
+    text-align:center;
+    border-radius:14px;
+    border:2px solid rgb(225,165,12);
+    outline:none;
+    box-shadow:0 0 0 3px rgba(225,165,12,.15);
+}
+
+/* Button */
+.verify-btn{
+    height:58px;
+    border-radius:14px;
+    background:linear-gradient(135deg,rgb(225,165,12),#ffcc33);
+    color:white;
+    font-weight:700;
+    border:none;
+    font-size:1.1rem;
+}
+
+/* Message */
+#msg{
+    font-weight:600;
+}
+
+/* Resend */
+.resend{
+    margin-top:20px;
+    font-size:14px;
+}
+</style>
 </head>
+
 <body>
 
-<div class="container d-flex justify-content-center align-items-center min-vh-100">
-  <div class="card shadow-lg border-0" style="max-width: 420px; width: 100%;">
-    <div class="card-body p-4">
+<div class="otp-wrapper">
+  <div class="otp-card">
 
-      <!-- Header -->
-      <div class="text-center mb-4">
-        <h4 class="fw-bold">Verify Your Email</h4>
-        <p class="text-muted small">
-          We’ve sent a 6-digit OTP to<br>
-          <strong>{{ email }}</strong>
-        </p>
-      </div>
-
-      <!-- OTP Form -->
-      <form id="otpForm">
-        {% csrf_token %}
-        <input type="hidden" id="email" value="{{ email }}">
-
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Enter OTP</label>
-          <input
-            type="text"
-            id="otp"
-            class="form-control form-control-lg text-center letter-spacing"
-            maxlength="6"
-            required
-          >
-        </div>
-
-        <button type="submit" class="btn btn-lg w-100" style="background-color: rgb(225, 165, 12);">
-          Verify & Continue
-        </button>
-      </form>
-
-      <!-- Message -->
-      <div id="msg" class="text-center mt-3 small"></div>
-
-      <!-- Resend -->
-      <div class="text-center mt-4">
-        <p class="small text-muted mb-1">Didn’t receive the code?</p>
-        <button id="resendBtn" class="btn btn-link p-0 fw-semibold" disabled>
-          Resend OTP (<span id="timer">30</span>s)
-        </button>
-      </div>
-
+    <!-- Header -->
+    <div class="text-center mb-4">
+      <h4>Verify Your Email</h4>
+      <p class="text-muted">
+        We’ve sent a 6-digit OTP to<br>
+        <strong>{{ email }}</strong>
+      </p>
     </div>
+
+    <!-- Form -->
+    <form id="otpForm">
+      {% csrf_token %}
+      <input type="hidden" id="email" value="{{ email }}">
+
+      <div class="mb-4">
+        <input type="text" id="otp" maxlength="6" required class="form-control">
+      </div>
+
+      <button type="submit" class="verify-btn w-100">
+        Verify & Continue
+      </button>
+    </form>
+
+    <div id="msg" class="text-center mt-3"></div>
+
+    <!-- Resend -->
+    <div class="text-center resend">
+      Didn’t receive the code?<br>
+      <button id="resendBtn" class="btn btn-link fw-bold" disabled>
+        Resend OTP (<span id="timer">30</span>s)
+      </button>
+    </div>
+
   </div>
 </div>
 
 <script>
 /* CSRF helper */
-function getCookie(name) {
-  let cookieValue = null;
-  if (document.cookie) {
-    document.cookie.split(';').forEach(cookie => {
-      cookie = cookie.trim();
-      if (cookie.startsWith(name + '=')) {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-      }
+function getCookie(name){
+  let value=null;
+  if(document.cookie){
+    document.cookie.split(";").forEach(c=>{
+      c=c.trim();
+      if(c.startsWith(name+"=")) value=decodeURIComponent(c.substring(name.length+1));
     });
   }
-  return cookieValue;
+  return value;
 }
-const csrftoken = getCookie('csrftoken');
+const csrftoken=getCookie("csrftoken");
 
-/* Verify OTP */
-document.getElementById("otpForm").onsubmit = async function (e) {
+/* Submit OTP */
+document.getElementById("otpForm").onsubmit=async function(e){
   e.preventDefault();
+  const email=document.getElementById("email").value;
+  const otp=document.getElementById("otp").value;
 
-  const email = document.getElementById("email").value;
-  const otp = document.getElementById("otp").value;
-
-  const response = await fetch("{% url 'verify_otp' %}", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      "X-CSRFToken": csrftoken
+  const res=await fetch("{% url 'verify_otp' %}",{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/x-www-form-urlencoded",
+      "X-CSRFToken":csrftoken
     },
-    body: new URLSearchParams({ email, otp })
+    body:new URLSearchParams({email,otp})
   });
 
-  const result = await response.json();
-  document.getElementById("msg").innerText = result.message;
+  const result=await res.json();
+  document.getElementById("msg").innerText=result.message;
 
-  if (result.status === "success") {
-    setTimeout(() => {
-      window.location.href = "/" + result.redirect_url + "/";
-    }, 1000);
+  if(result.status==="success"){
+    setTimeout(()=>window.location.href="/"+result.redirect_url+"/",1000);
   }
 };
 
 /* Resend OTP */
-let timeLeft = 30;
-const resendBtn = document.getElementById("resendBtn");
-const timerSpan = document.getElementById("timer");
+let timeLeft=30;
+const resendBtn=document.getElementById("resendBtn");
+const timer=document.getElementById("timer");
 
-const startTimer = () => {
-  resendBtn.disabled = true;
-  const interval = setInterval(() => {
+function startTimer(){
+  resendBtn.disabled=true;
+  const t=setInterval(()=>{
     timeLeft--;
-    timerSpan.innerText = timeLeft;
-    if (timeLeft <= 0) {
-      clearInterval(interval);
-      resendBtn.disabled = false;
-      resendBtn.innerText = "Resend OTP";
+    timer.innerText=timeLeft;
+    if(timeLeft<=0){
+      clearInterval(t);
+      resendBtn.disabled=false;
+      resendBtn.innerText="Resend OTP";
     }
-  }, 1000);
-};
-
+  },1000);
+}
 startTimer();
 
-resendBtn.onclick = async () => {
-  resendBtn.disabled = true;
-  resendBtn.innerText = "Sending...";
+resendBtn.onclick=async()=>{
+  resendBtn.disabled=true;
+  resendBtn.innerText="Sending...";
+  const email=document.getElementById("email").value;
 
-  const email = document.getElementById("email").value;
-
-  const response = await fetch("{% url 'resend_otp' %}", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      "X-CSRFToken": csrftoken
+  const res=await fetch("{% url 'resend_otp' %}",{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/x-www-form-urlencoded",
+      "X-CSRFToken":csrftoken
     },
-    body: new URLSearchParams({ email })
+    body:new URLSearchParams({email})
   });
 
-  const result = await response.json();
-  document.getElementById("msg").innerText = result.message;
+  const result=await res.json();
+  document.getElementById("msg").innerText=result.message;
 
-  timeLeft = 30;
-  timerSpan.innerText = timeLeft;
-  resendBtn.innerHTML = `Resend OTP (<span id="timer">30</span>s)`;
+  timeLeft=30;
+  timer.innerText=30;
+  resendBtn.innerHTML=`Resend OTP (<span id="timer">30</span>s)`;
   startTimer();
 };
 </script>
