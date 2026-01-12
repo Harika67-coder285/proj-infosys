@@ -31,6 +31,18 @@
 
 <link href="{% static 'css/main.css' %}?v=6" rel="stylesheet" />
 <style>
+  /* Prevent content from hiding behind fixed header */
+body {
+  padding-top: 90px;
+}
+
+/* Mobile: header is taller */
+@media (max-width: 1199px) {
+  body {
+    padding-top: 120px;
+  }
+}
+
   #chat-icon {
     position: fixed;
     bottom: 30px;
