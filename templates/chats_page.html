@@ -2,7 +2,6 @@
 <html>
 <head>
     <title>Messages</title>
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
@@ -27,7 +26,7 @@
             background: #ffffff;
             border-right: 1px solid #e5e7eb;
             overflow-y: auto;
-            transition: transform 0.3s ease;
+            transition: 0.3s;
         }
 
         .chat-list-header {
@@ -64,7 +63,7 @@
             display: flex;
             flex-direction: column;
             background: #f9fafb;
-            transition: transform 0.3s ease;
+            transition: 0.3s;
         }
 
         .chat-header {
@@ -79,8 +78,8 @@
 
         .back-btn {
             display: none;
-            font-size: 18px;
             cursor: pointer;
+            font-size: 18px;
         }
 
         .messages {
@@ -95,12 +94,11 @@
             margin-bottom: 10px;
             border-radius: 8px;
             font-size: 14px;
-            line-height: 1.5;
         }
 
         .sent {
             background: #4f46e5;
-            color: #ffffff;
+            color: white;
             margin-left: auto;
         }
 
@@ -121,7 +119,6 @@
             padding: 10px 14px;
             border-radius: 6px;
             border: 1px solid #d1d5db;
-            font-size: 14px;
         }
 
         .input-box button {
@@ -131,13 +128,12 @@
             background: #4f46e5;
             color: white;
             border-radius: 6px;
-            cursor: pointer;
         }
 
         .empty {
             margin: auto;
+            text-align: center;
             color: #6b7280;
-            font-size: 16px;
         }
 
         /* MOBILE */
@@ -155,7 +151,6 @@
                 height: 100%;
                 transform: translateX(100%);
                 z-index: 20;
-                background: #f9fafb;
             }
 
             .chat-window.active {
@@ -177,35 +172,40 @@
 
 <div class="container">
 
-    <!-- LEFT PANEL -->
+    <!-- LEFT -->
     <div class="chat-list" id="chatList">
         <div class="chat-list-header">Messages</div>
 
-        {% for chat in chats %}
-        <div class="chat-item {% if selected_chat and chat.id == selected_chat.id %}active{% endif %}"
-             onclick="openChat('{{ chat.id }}')">
+        {% if chats %}
+            {% for chat in chats %}
+            <div class="chat-item {% if selected_chat and chat.id == selected_chat.id %}active{% endif %}"
+                 onclick="window.location.href='/chats/{{ chat.id }}/'">
 
-            <div class="chat-name">
-                {% if current_user_type == 'freelancer' %}
-                    {{ chat.recruiter.full_name }}
-                {% else %}
-                    {{ chat.freelancer.full_name }}
-                {% endif %}
-            </div>
+                <div class="chat-name">
+                    {% if current_user_type == 'freelancer' %}
+                        {{ chat.recruiter.full_name }}
+                    {% else %}
+                        {{ chat.freelancer.full_name }}
+                    {% endif %}
+                </div>
 
-            <div class="last-message">
-                {{ chat.last_message|default:"No messages yet" }}
+                <div class="last-message">
+                    {{ chat.last_message|default:"No messages yet" }}
+                </div>
             </div>
-        </div>
-        {% endfor %}
+            {% endfor %}
+        {% else %}
+            <div class="empty">No conversations yet</div>
+        {% endif %}
     </div>
 
-    <!-- RIGHT PANEL -->
+    <!-- RIGHT -->
     <div class="chat-window {% if selected_chat %}active{% endif %}" id="chatWindow">
 
         {% if selected_chat %}
+
         <div class="chat-header">
-            <span class="back-btn" onclick="goBack()">←</span>
+            <span class="back-btn" onclick="window.location.href='/chats/'">←</span>
             {% if current_user_type == 'freelancer' %}
                 {{ selected_chat.recruiter.full_name }}
             {% else %}
@@ -213,20 +213,28 @@
             {% endif %}
         </div>
 
-        <div class="messages" id="messages">
-            {% for msg in messages %}
-            <div class="msg {% if msg.sender_type == current_user_type %}sent{% else %}received{% endif %}">
-                {{ msg.text }}
-            </div>
-            {% endfor %}
+        <div class="messages">
+            {% if messages %}
+                {% for msg in messages %}
+                    <div class="msg {% if msg.sender_type == current_user_type %}sent{% else %}received{% endif %}">
+                        {{ msg.text }}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty">
+                    👋 Start the conversation  
+                    <br><small>Send a message to begin chatting</small>
+                </div>
+            {% endif %}
         </div>
 
         <div class="input-box">
             <input type="text" id="messageInput" placeholder="Type your message...">
             <button onclick="sendMessage()">Send</button>
         </div>
+
         {% else %}
-            <div class="empty">Select a conversation to start messaging</div>
+            <div class="empty">Select a chat to start messaging</div>
         {% endif %}
 
     </div>
@@ -234,13 +242,23 @@
 </div>
 
 <script>
-function openChat(chatId){
-    window.location.href = "/chats/" + chatId + "/";
-}
+function sendMessage() {
+    const text = document.getElementById("messageInput").value.trim();
+    if (!text) return;
 
-function goBack(){
-    document.getElementById("chatWindow").classList.remove("active");
-    document.getElementById("chatList").classList.remove("hidden");
+    fetch("/send-message/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: new URLSearchParams({
+            chat_id: "{{ selected_chat.id }}",
+            sender_type: "{{ current_user_type }}",
+            sender_id: "{{ current_user_id }}",
+            text: text
+        })
+    }).then(() => location.reload());
 }
 </script>
 
