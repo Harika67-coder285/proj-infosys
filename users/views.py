@@ -345,7 +345,7 @@ def register_user(request):
             )
 
             # Return success
-            return JsonResponse({"status": "success"})
+            return JsonResponse({"status": "success","email": email})
 
         except Exception as e:
             # Catch any error (like file upload or email sending)
