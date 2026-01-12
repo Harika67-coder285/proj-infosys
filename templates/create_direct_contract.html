@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Direct Contract</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f5f6fa;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .container {
+            max-width: 600px;
+            margin-top: 80px;
+        }
+
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            background-color: rgb(225, 165, 12);
+            color: #fff;
+            font-weight: 600;
+            font-size: 1.25rem;
+            text-align: center;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        .form-label {
+            font-weight: 500;
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .btn-primary {
+            background-color: rgb(225, 165, 12);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: rgb(225, 165, 12);
+        }
+
+        h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #111827;
+        }
+
+        label {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h3>Hire {{ freelancer.full_name }} Directly</h3>
+    <div class="card p-4">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label class="form-label">Payment Type</label>
+                <select name="payment_type" class="form-select" required>
+                    <option value="">Select Payment Type</option>
+                    <option value="hourly">Hourly</option>
+                    <option value="fixed">Fixed</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Agreed Amount ($)</label>
+                <input type="number" name="amount" class="form-control" placeholder="Enter amount" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Start Date</label>
+                <input type="date" name="start_date" class="form-control" required>
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary">Send Contract</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+</body>
+</html>

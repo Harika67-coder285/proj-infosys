@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Recruiter Chats</title>
+    <style>
+        body { font-family: Arial; background: #f0f2f5; }
+        .chat-list { width: 400px; margin: auto; background: white; }
+        .chat-item {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+        }
+        .chat-item:hover { background: #f5f5f5; }
+        .name { font-weight: bold; }
+        .last-msg { color: gray; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<div class="chat-list">
+    <h3 style="text-align:center;">Chats</h3>
+
+    {% for item in chat_data %}
+        <div class="chat-item"
+             onclick="window.location.href='/chat/{{ item.freelancer.id }}/{{ recruiter_id }}/'">
+            <div class="name">{{ item.freelancer.full_name }}</div>
+            <div class="last-msg">{{ item.last_message }}</div>
+        </div>
+    {% empty %}
+        <p style="text-align:center;">No chats yet</p>
+    {% endfor %}
+</div>
+
+</body>
+</html>

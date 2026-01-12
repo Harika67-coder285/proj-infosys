@@ -1,0 +1,200 @@
+/* =============== GLOBAL =============== */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: #f5f6fa;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 220px 1fr 260px;
+    height: 100vh;
+     padding-top: 80px; /* same as header height */
+}
+
+/* =============== SIDEBAR =============== */
+.sidebar {
+    background: #fff;
+    padding: 25px 20px;
+    border-right: 1px solid #ddd;
+}
+
+.sidebar nav a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    padding: 12px 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+    transition: 0.2s;
+}
+
+.sidebar nav a:hover,
+.sidebar nav a.active {
+    background: #4154f1;
+    color: #fff;
+}
+
+/* =============== MAIN CONTENT =============== */
+.content {
+    padding: 30px 40px;
+    overflow-y: auto;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.topbar h3 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.topbar .icons span {
+    font-size: 20px;
+    margin-left: 15px;
+    cursor: pointer;
+}
+
+.title {
+    margin-bottom: 20px;
+    font-size: 26px;
+}
+
+/* =============== STAT CARDS =============== */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.stat-card {
+    background: #fff;
+    padding: 22px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+}
+
+.stat-card p {
+    margin: 0;
+    color: #666;
+}
+
+.stat-card h2 {
+    margin: 10px 0 0;
+    font-size: 26px;
+}
+
+/* =============== CHART CARD =============== */
+.chart-card {
+    margin-top: 30px;
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* =============== RIGHT PROFILE PANEL =============== */
+.profile-panel {
+    background: #fff;
+    padding: 30px 20px;
+    border-left: 1px solid #ddd;
+}
+
+.profile-panel h2 {
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.avatar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.avatar img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+.profile-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.profile-menu li {
+    padding: 10px 0;
+    font-size: 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.profile-menu li:hover {
+    color: #4154f1;
+    font-weight: 600;
+}
+
+/* =============== FLOATING CHAT BUTTON =============== */
+.chat-btn {
+    position: fixed;
+    bottom: 25px;
+    left: 25px;
+    width: 55px;
+    height: 55px;
+    background: #4154f1;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    font-size: 28px;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 999;
+}
+
+/* =============== RESPONSIVE =============== */
+@media (max-width: 1050px) {
+    .layout {
+        grid-template-columns: 200px 1fr;
+    }
+    .profile-panel {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+    .sidebar {
+        display: none;
+    }
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 500px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+

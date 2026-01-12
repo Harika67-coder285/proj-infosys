@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Applications</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+
+    <style>
+        body {
+            background: #f5f7ff;
+            padding: 30px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .table-container {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width: 100%;
+        }
+
+        th {
+            background: #4e73df;
+            color: white;
+            text-align: center;
+        }
+
+        td {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background: #f1f3ff;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+        }
+
+        .status-applied { background: #6c757d; }
+        .status-shortlisted { background: #ffc107; }
+        .status-interview { background: #17a2b8; }
+        .status-accepted { background: #28a745; }
+        .status-rejected { background: #dc3545; }
+
+        select.form-select {
+            width: auto;
+            display: inline-block;
+        }
+
+        button.btn-save {
+            background: #4e73df;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button.btn-save:hover {
+            background: #2e59d9;
+        }
+
+        @media (max-width: 768px) {
+            .table-responsive {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+<a href="javascript:history.back()" class="btn btn-secondary mb-3">
+    ← Back
+</a>
+
+<div class="container table-container">
+
+
+    <h2>Job Applications</h2>
+<div class="container mt-5">
+    <h3>{{ job.title }} - Applications</h3>
+
+    {% if applications %}
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>Freelancer Name</th>
+                <th>Email</th>
+                <th>Resume</th>
+                <th>Cover Letter</th>
+                <th>Applied At</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app in applications %}
+            <tr>
+                <td>{{ app.freelancer_name }}</td>
+                <td>{{ app.freelancer_email }}</td>
+                <td>
+                    {% if app.freelancer_resume %}
+                    <a href="{{ app.freelancer_resume.url }}" target="_blank">Download</a>
+                    {% else %}
+                    N/A
+                    {% endif %}
+                </td>
+                <td>{{ app.cover_letter|default:"-" }}</td>
+                <td>{{ app.applied_at|date:"d M Y H:i" }}</td>
+                <td>{{ app.get_status_display }}</td>
+                <td>
+  <select class="form-select status-select" data-app-id="{{ app.id }}">
+    <option value="applied" {% if app.status == 'applied' %}selected{% endif %}>Applied</option>
+    <option value="shortlisted" {% if app.status == 'shortlisted' %}selected{% endif %}>Shortlisted</option>
+    <option value="interview" {% if app.status == 'interview' %}selected{% endif %}>Interview Scheduled</option>
+    <option value="accepted" {% if app.status == 'accepted' %}selected{% endif %}>Accept</option>
+    <option value="rejected" {% if app.status == 'rejected' %}selected{% endif %}>Reject</option>
+  </select>
+</td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No applications yet.</p>
+    {% endif %}
+</div>
+
+</div>
+
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script>
+document.querySelectorAll(".status-select").forEach(select => {
+    select.addEventListener("change", function() {
+        const appId = this.dataset.appId;
+        const newStatus = this.value;
+        // Redirect to update status view
+        window.location.href = `/application/${appId}/status/${newStatus}/`;
+    });
+});
+</script>
+
+</body>
+</html>

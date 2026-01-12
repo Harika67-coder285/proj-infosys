@@ -1,0 +1,708 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Index - SkillConnect Bootstrap Template</title>
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+
+  <!-- Favicons -->
+
+  <link href="{% static 'img/favicon.png'%}" rel="icon" />
+  <link href="{% static 'img/apple-touch-icon.png'%}" rel="apple-touch-icon" />
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet" />
+
+
+<link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" />
+<link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet" />
+<link href="{% static 'vendor/aos/aos.css' %}" rel="stylesheet" />
+<link href="{% static 'vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet" />
+<link href="{% static 'vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet" />
+
+
+
+
+  
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+  <link href="{% static 'css/main.css' %}" rel="stylesheet">
+<style>
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f4f6fb;
+    padding-top: 90px;
+}
+
+/* HEADER */
+.header {
+    background: linear-gradient(90deg,#1f2937,#111827);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+}
+
+.navmenu a {
+    font-weight: 500;
+    transition: all .3s ease;
+}
+.navmenu a:hover {
+    color: #fbbf24 !important;
+    transform: translateY(-2px);
+}
+
+/* PROFILE */
+.profile-avatar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #fbbf24;
+}
+
+/* DASHBOARD */
+.dashboard-title {
+    font-weight: 800;
+    color: #1f2937;
+}
+.dashboard-subtitle {
+    color: #6b7280;
+}
+
+/* CARDS */
+.card {
+    border-radius: 16px;
+    padding: 22px;
+    background: linear-gradient(135deg,#ffffff,#f1f3ff);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    transition: all .3s ease;
+}
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.15);
+}
+
+.card h6 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #6b7280;
+}
+.card h3 {
+    font-weight: 800;
+    color: #1f2937;
+}
+
+/* CHARTS */
+.chart-container {
+    height: 320px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 16px;
+     
+}
+
+/* CHAT */
+#chat-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg,rgb(225, 165, 12),#d8e91b);
+    color: #fff;
+    font-size: 26px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    cursor: pointer;
+}
+
+#chatbox {
+    position: fixed;
+    top: 120px;                 /* SAME AS HEADER HEIGHT */
+    right: 30px;
+    width: 360px;
+    height: calc(100vh - 220px); /* full screen minus header */
+    display: none;
+    flex-direction: column;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+    overflow: hidden;
+    z-index: 9999;             /* ABOVE HEADER */
+}
+
+
+#chat-header {
+    background: rgb(225, 165, 12);;
+    color: white;
+    padding: 14px;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+#messages {
+    flex: 1;
+    padding: 12px;
+    overflow-y: auto;
+    background: #f9fafb;
+}
+
+
+
+.msg {
+    padding: 10px 14px;
+    border-radius: 14px;
+    margin-bottom: 8px;
+    max-width: 80%;
+}
+.user {
+    background: rgb(225, 165, 12);;
+    color: white;
+    margin-left: auto;
+}
+.bot {
+    background: #e5e7eb;
+}
+
+
+#messages {
+    scroll-behavior: smooth;
+}
+.msg {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+#input-area {
+    display: flex;
+    border-top: 1px solid #ddd;
+    background: white;
+}
+
+#user_input {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    outline: none;
+}
+
+#send_btn {
+    padding: 12px 18px;
+    border: none;
+    background: rgb(225, 165, 12);;
+    color: white;
+    cursor: pointer;
+}
+@media (max-width: 1199px) {
+
+  /* Mobile menu container */
+  .navmenu ul {
+    inset: 65px 12px auto 12px;   /* ↓ smaller width & top spacing */
+    max-height: 75vh;             /* ↓ limit height */
+    padding: 10px 12px;           /* ↓ less padding */
+    border-radius: 8px;
+  }
+
+  /* Menu items */
+  .navmenu ul li a {
+    font-size: 14px;              /* ↓ smaller text */
+    padding: 8px 10px;            /* ↓ compact links */
+  }
+
+  /* Buttons inside menu */
+  .navmenu .btn,
+  .navmenu .btn-getstarted {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  /* Dropdown submenu */
+  .navmenu .dropdown ul {
+    padding-left: 12px;
+    margin-top: 4px;
+  }
+
+  .navmenu .dropdown ul li a {
+    font-size: 13px;
+    padding: 6px 8px;
+  }
+
+  /* Profile avatar inside menu */
+  .profile-avatar img {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Hamburger icon size */
+  .mobile-nav-toggle {
+    font-size: 22px;   /* ↓ smaller hamburger icon */
+  }
+}
+/* ===================================
+   MOBILE GAP BETWEEN LOGIN & SIGNUP
+   =================================== */
+@media (max-width: 1199px) {
+
+  /* Post Job & Logout buttons */
+  .navmenu .btn,
+  .navmenu .btn-getstarted {
+    display: inline-flex !important;
+    width: auto !important; 
+    margin: 6px auto;     
+    padding:10px;           /* 👈 center horizontally */
+    border-radius: 6px;
+  }
+
+  /* Center buttons inside list */
+
+
+}
+</style>
+</head>
+
+
+<body>
+
+<!-- HEADER -->
+  <header id="header" class="header d-flex align-items-center fixed-top">
+  <div class="header-container container-fluid container-xl position-relative d-flex align-items-center justify-content-between ">
+
+    <a href="{% url 'home' %}" class="logo d-flex align-items-center me-auto me-xl-0">
+      <img src="{% static 'img/logo1.png'%}" alt="SkillConnect Logo" />
+      <h1 class="sitename" style="color:rgb(225, 165, 12);">SkillConnect</h1>
+    </a>
+    
+    <nav id="navmenu" class="navmenu">
+  <ul>
+    <!-- Home -->
+    <li><a href="{% url 'home' %}" class="active" style="color:rgb(225, 165, 12);">Home</a></li>
+    
+    <li><a href="{% url 'jobs_list' %}" id="not_vis1" style="color:rgb(225, 165, 12);">Find Work</a></li>
+
+    <li><a href="{% url 'browse' %}" id="not_vis2" style="color:rgb(225, 165, 12);">Find Freelancers</a></li>
+    {% if request.session.account_type == "recruiter" %}
+         <li><a href="{% url 'browse' %}" id="browse-link" style="color:rgb(225, 165, 12);">Find Freelancers</a></li>
+        <li>
+          <a href="{% url 'post_job' %}" class="btn" style="padding:10px;color:white;background-color: rgb(225, 165, 12);;">
+            <i class="bi bi-plus-lg"></i> Post Job
+          </a>
+
+        </li>
+       
+</li>
+        {% endif %}
+
+{% if request.session.account_type == "freelancer" %}
+<li><a href="{% url 'jobs_list' %}" style="color:rgb(225, 165, 12);">Find Work</a></li>
+<li class="dropdown">
+  <a href="#" style="color:rgb(225, 165, 12);">
+    Notifications
+    {% if notification_count > 0 %}
+      <span class="badge bg-primary">{{ notification_count }}</span>
+    {% endif %}
+  </a>
+
+  <ul>
+    {% for n in freelancer_notifications %}
+      <li>
+        <a href="{% url 'freelancer_contracts' %}" >
+          {{ n.message }}
+        </a>
+      </li>
+    {% empty %}
+      <li><span class="dropdown-item">No notifications</span></li>
+    {% endfor %}
+  </ul>
+  <li>
+  <a href="{%url 'saved_jobs'%}" style="color:rgb(225, 165, 12);">Saved Jobs</a>
+  </li>
+</li>
+
+
+
+{% endif %}
+
+<li id="profile-link" class="dropdown" style="display:none;">
+    <a href="#" class="profile-avatar dropdown-toggle">
+        {% if app_user and app_user.photo %}
+            <img src="{{ app_user.photo.url }}" alt="Profile">
+        {% else %}
+            <img src="{% static 'img/image.png' %}" alt="Profile">
+        {% endif %}
+    </a>
+    {% if request.session.account_type == "recruiter" %}
+    <ul class="dropdown-menu">
+        <li><a href="{% url 'recruiter_dashboard' %}">Analysis</a></li>
+        <li><a href="{% url 'my_jobs' %}">My Jobs</a></li>
+        <li><a href="{% url 'contracts' %}">My Contracts</a></li>
+               <li>
+  <a href="{%url 'recruiter_settings'%}">Settings</a>
+  <li><a href="{%url 'chats'%}">Chats</a></li>
+</li>
+    </ul>
+    {% else %}
+        <ul class="dropdown-menu">
+        <li><a href="{% url 'freelancer_dashboard' %}">Analysis</a></li>
+        <li><a href="{% url 'jobs_applied' %}">Jobs Applied</a></li>
+        <li><a href="{% url 'freelancer_contracts' %}">Contract Requests</a></li>
+        <li>
+  <a href="{%url 'freelancer_settings'%}">Settings</a>
+  
+</li>
+<li><a href="{%url 'chats'%}">Chats</a></li>
+    </ul>
+
+    {%endif%}
+</li>
+    <!-- Profile Avatar -->
+<!-- Profile Avatar -->
+<!-- Profile Avatar -->
+
+
+<!-- Login / Signup -->
+<li id="login-link"><a href="{% url 'login_page' %}" class="btn-getstarted">Login</a></li>
+<li id="signup-link"><a href="{% url 'register_page' %}" class="btn-getstarted">Sign Up</a></li>
+
+<!-- Logout -->
+<li id="header-logout" style="display:none;">
+    <a href="javascript:void(0)" onclick="logoutHeader()" class="btn-getstarted" style="padding:10px">Logout</a>
+</li>
+
+
+  </ul>
+
+  <i class="mobile-nav-toggle d-xl-none bi bi-list" style="color:white"></i>
+</nav>
+
+  </div>
+</header>
+
+<!-- DASHBOARD -->
+<div class="container mt-4">
+<h2 class="dashboard-title" style="margin-top:5%">📊 Freelancer Dashboard</h2>
+<p class="dashboard-subtitle">Track your applications, interviews & contracts</p>
+
+<div class="row g-4 mt-3">
+<div class="col-md-3"><div class="card border-start border-primary border-4"><h6>Applied</h6><h3>{{ applied }}</h3></div></div>
+<div class="col-md-3"><div class="card border-start border-warning border-4"><h6>Shortlisted</h6><h3>{{ shortlisted }}</h3></div></div>
+<div class="col-md-3"><div class="card border-start border-info border-4"><h6>Interview</h6><h3>{{ interviews }}</h3></div></div>
+<div class="col-md-3"><div class="card border-start border-success border-4"><h6>Accepted</h6><h3>{{ accepted }}</h3></div></div>
+<div class="col-md-3"><div class="card border-start border-danger border-4"><h6>Rejected</h6><h3>{{ rejected }}</h3></div></div>
+<div class="col-md-3"><div class="card border-start border-success border-4"><h6>Active Contracts</h6><h3>{{ active_contracts }}</h3></div></div>
+</div>
+
+<div class="row g-4 mt-4">
+<div class="col-md-6">
+<div class="chart-container" style="display: flex; justify-content: center;align-items: center;">
+<h6 class="fw-bold mb-2">Application Status</h6>
+<canvas id="statusChart"></canvas>
+</div>
+</div>
+<div class="col-md-6">
+<div class="chart-container" style="display: flex; justify-content: center;align-items: center;">
+<h6 class="fw-bold mb-2">Active Contracts</h6>
+<canvas id="contractChart"></canvas>
+</div>
+</div>
+</div>
+</div>
+
+<!-- CHAT -->
+<button id="chat-btn">💬</button>
+<div id="chatbox">
+    <div id="chat-header">
+        <a href="{% url 'dashboard' %}" class="back-arrow">←</a>
+        Support Chat
+        <span id="close-chat" style="cursor: pointer;">×</span>
+    </div>
+
+    <div id="messages"></div>
+
+    <div id="input-area">
+        <input id="user_input" type="text" placeholder="Ask a question..." />
+        <button id="send_btn">Send</button>
+    </div>
+</div>
+
+</div>
+
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const ctx1 = document.getElementById('statusChart');
+    const ctx2 = document.getElementById('contractChart');
+    const chatBtn = document.getElementById("chat-btn");
+    const chatbox = document.getElementById("chatbox");
+
+    const applied = Number("{{ applied|default:'0' }}");
+    const shortlisted = Number("{{ shortlisted|default:'0' }}");
+    const interviews = Number("{{ interviews|default:'0' }}");
+    const accepted = Number("{{ accepted|default:'0' }}");
+    const rejected = Number("{{ rejected|default:'0' }}");
+    const activeContracts = Number("{{ active_contracts|default:'0' }}");
+
+    if (ctx1) {
+        new Chart(ctx1, {
+            type: 'pie',
+            data: {
+                labels: ['Applied', 'Shortlisted', 'Interview', 'Accepted', 'Rejected'],
+                datasets: [{
+                    data: [applied, shortlisted, interviews, accepted, rejected],
+                    backgroundColor: [
+                        '#3b82f6',
+                        '#facc15',
+                        '#6366f1',
+                        '#22c55e',
+                        '#ef4444'
+                    ]
+                }]
+            }
+        });
+    }
+
+    if (ctx2) {
+        new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Active'],
+                datasets: [{
+                    data: [activeContracts],
+                    backgroundColor: ['#22c55e']
+                }]
+            }
+        });
+    }
+
+    if (chatBtn && chatbox) {
+        chatBtn.onclick = () => chatbox.style.display = "flex";
+    }
+
+});
+</script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'vendor/php-email-form/validate.js' %}"></script>
+<script src="{% static 'vendor/aos/aos.js' %}"></script>
+<script src="{% static 'vendor/glightbox/js/glightbox.min.js' %}"></script>
+<script src="{% static 'vendor/swiper/swiper-bundle.min.js' %}"></script>
+<script src="{% static 'vendor/purecounter/purecounter_vanilla.js' %}"></script>
+
+  <!-- Main JS File (keeps your original if present) -->
+  <script src="{% static 'js/skillconnect.js'%}"></script>
+
+  <!-- Small inline script: fixes mobile nav & dropdowns so header works even if external JS fails -->
+  <script>
+
+document.addEventListener("DOMContentLoaded", () => {
+    const userId = "{{ request.session.user_id|default:'' }}";
+    const accountType = "{{ request.session.account_type|default:''|escapejs }}";
+
+    const profileLink = document.getElementById("profile-link");
+    const loginLink = document.getElementById("login-link");
+    const signupLink = document.getElementById("signup-link");
+    const headerLogout = document.getElementById("header-logout");
+    const browseLink = document.getElementById("browse-link");
+    const categoriesLink = document.getElementById("categories-link"); // 👈 new
+    const findworkLink=document.getElementById("not_vis1");
+    const findfreelancersLink=document.getElementById("not_vis2");
+    if (userId) {
+        if (profileLink) profileLink.style.display = "flex";
+        if (headerLogout) headerLogout.style.display = "block";
+        if (loginLink) loginLink.style.display = "none";
+        if (signupLink) signupLink.style.display = "none";
+        if (browseLink && accountType!== "freelancer") {
+            browseLink.style.display = "block";
+            browseLink.innerText = "Find Freelancers";
+        }
+        if (browseLink && accountType=== "freelancer") {
+            browseLink.style.display = "none";
+        }
+        if(findworkLink){
+          findworkLink.style.display="none";
+        }
+        if(findfreelancersLink){
+          findfreelancersLink.style.display="none";
+        }
+    } else {
+        if (profileLink) profileLink.style.display = "none";
+        if (headerLogout) headerLogout.style.display = "none";
+        if (loginLink) loginLink.style.display = "block";
+        if (signupLink) signupLink.style.display = "block";
+        if (browseLink) browseLink.style.display = "none";
+        if(findworkLink){
+          findworkLink.style.display="block";
+        }
+if(findfreelancersLink){
+          findfreelancersLink.style.display="block";
+        }
+    }
+});
+
+
+    (function () {
+      // Mobile nav toggle
+      const mobileToggle = document.querySelector('.mobile-nav-toggle');
+      const navmenu = document.querySelector('#navmenu');
+      if (mobileToggle && navmenu) {
+        mobileToggle.addEventListener('click', function (e) {
+          e.preventDefault();
+          document.body.classList.toggle('mobile-nav-active');
+          // toggle icon class
+          this.classList.toggle('bi-list');
+          this.classList.toggle('bi-x');
+        });
+      }
+
+      // Desktop dropdowns: allow hover to show (handled by CSS), but ensure nested dropdowns work on click for mobile
+      // Add click handlers to .dropdown > a for mobile behavior
+      const dropdownToggles = document.querySelectorAll('#navmenu .dropdown > a.dropdown-toggle, #navmenu .dropdown > a');
+      dropdownToggles.forEach(btn => {
+        btn.addEventListener('click', function (e) {
+          // On small screens, toggle the submenu
+          if (window.innerWidth <= 1199) {
+            e.preventDefault();
+            const parentLi = this.parentElement;
+            const submenu = parentLi.querySelector('ul');
+            if (!submenu) return;
+            const isOpen = submenu.classList.contains('dropdown-active');
+            // hide other open dropdowns at same level (optional)
+            parentLi.querySelectorAll('.dropdown-active').forEach(el => el.classList.remove('dropdown-active'));
+            if (!isOpen) submenu.classList.add('dropdown-active');
+            else submenu.classList.remove('dropdown-active');
+          }
+        });
+      });
+
+      // Close mobile nav when clicking outside (optional)
+      document.addEventListener('click', function (e) {
+        const target = e.target;
+        if (!navmenu.contains(target) && !mobileToggle.contains(target) && document.body.classList.contains('mobile-nav-active')) {
+          document.body.classList.remove('mobile-nav-active');
+          if (mobileToggle) {
+            mobileToggle.classList.remove('bi-x');
+            mobileToggle.classList.add('bi-list');
+          }
+        }
+      });
+
+      // Accessibility: close mobile nav on ESC
+      document.addEventListener('keyup', function (e) {
+        if (e.key === 'Escape' && document.body.classList.contains('mobile-nav-active')) {
+          document.body.classList.remove('mobile-nav-active');
+          if (mobileToggle) {
+            mobileToggle.classList.remove('bi-x');
+            mobileToggle.classList.add('bi-list');
+          }
+        }
+      });
+
+      // Init AOS if available
+      if (window.AOS) AOS.init();
+
+      // Basic fallback for glightbox/purecounter/swiper if those libs exist in your assets
+      if (window.PureCounter) { try { new PureCounter(); } catch (e) {} }
+      if (window.GLightbox) { try { GLightbox && GLightbox({ selector: '.glightbox' }); } catch (e) {} }
+      // Swiper config: if you have your custom init in skillconnect.js it will run instead; keep this minimal
+      if (window.Swiper) {
+        document.querySelectorAll('.init-swiper').forEach(wrapper => {
+          // config is embedded in <script type="application/json" class="swiper-config"> inside the wrapper
+          const configEl = wrapper.querySelector('.swiper-config');
+          let cfg = {};
+          try { cfg = JSON.parse(configEl && configEl.textContent || '{}'); } catch (e) {}
+          const container = wrapper.querySelector('.swiper-wrapper').parentElement;
+          if (container && !container.classList.contains('swiper-initialized')) {
+            new Swiper(container, cfg);
+          }
+        });
+      }
+    })();
+const chatBtn = document.getElementById("chat-btn");
+const chatbox = document.getElementById("chatbox");
+const closeBtn = document.getElementById("close-chat");
+
+chatBtn.addEventListener("click", () => chatbox.style.display = "flex");
+closeBtn.addEventListener("click", () => chatbox.style.display = "none");
+
+// CSRF helper
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+            if (cookie.startsWith(name + "=")) {
+                cookieValue = cookie.substring(name.length + 1);
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Chat functions
+function appendMessage(text, sender, loader=false) {
+    const msgDiv = document.createElement("div");
+    msgDiv.classList.add("msg", sender);
+    if(loader) msgDiv.classList.add("loader");
+    msgDiv.innerText = text;
+    document.getElementById("messages").appendChild(msgDiv);
+    document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight;
+    return msgDiv;
+}
+
+function sendMessage() {
+    const input = document.getElementById("user_input");
+    const message = input.value.trim();
+    if (!message) return;
+
+    appendMessage(message, "user");
+    input.value = "";
+
+    const loaderDiv = appendMessage("Bot is typing...", "bot", true);
+
+    fetch("/chatbot/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken")
+        },
+        body: JSON.stringify({ message })
+    })
+    .then(res => res.json())
+    .then(data => {
+        loaderDiv.remove();
+        appendMessage(data.reply, "bot");
+    })
+    .catch(err => {
+        loaderDiv.remove();
+        appendMessage("Error: Could not reach server.", "bot");
+        console.error(err);
+    });
+}
+
+// Button click & Enter key
+document.getElementById("send_btn").addEventListener("click", sendMessage);
+document.getElementById("user_input").addEventListener("keydown", function(e) {
+    if(e.key==="Enter") sendMessage();
+});
+
+
+function logoutHeader() {
+    window.location.href = "{% url 'logout_user' %}";
+}
+
+</script>
+</body>
+</html>

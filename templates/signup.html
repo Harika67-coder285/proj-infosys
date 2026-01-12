@@ -1,0 +1,178 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register | SkillConnect</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+
+  <style>
+    body {
+      background: #f4f6fb;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: system-ui, sans-serif;
+    }
+
+    .register-box {
+      width: 100%;
+      max-width: 420px;
+      background: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.08);
+    }
+
+    .brand {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .brand span {
+      color: rgb(225,165,12);
+    }
+
+    .form-label {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .form-control, .form-select {
+      padding: 10px 14px;
+      border-radius: 8px;
+    }
+
+    .btn-register {
+      background: rgb(225,165,12);
+      color: white;
+      font-weight: 600;
+      border-radius: 8px;
+      border: none;
+      padding: 10px;
+    }
+
+    .btn-register:hover {
+      background: rgb(205,145,5);
+    }
+
+    .text-small {
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+
+    .home-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #ffffff;
+      color: #111827;
+      border: 1px solid #e5e7eb;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      transition: all 0.2s ease;
+      z-index: 999;
+    }
+
+    .home-btn:hover {
+      background: rgb(225,165,12);
+      color: #fff;
+      border-color: rgb(225,165,12);
+    }
+  </style>
+</head>
+
+<body>
+
+<a href="{% url 'home' %}" class="home-btn">
+  <i class="bi bi-house-door"></i> Home
+</a>
+
+<div class="register-box">
+
+  <div class="text-center mb-4">
+    <div class="brand">Skill<span>Connect</span></div>
+    <p class="text-small mt-1">Create your account</p>
+  </div>
+
+  <form id="registerForm" method="POST">
+    {% csrf_token %}
+
+    <!-- ACCOUNT TYPE -->
+    <div class="mb-3">
+      <label class="form-label">Account Type</label>
+      <select name="account_type" class="form-select" required>
+        <option value="">Select</option>
+        <option value="freelancer">Freelancer</option>
+        <option value="recruiter">Recruiter</option>
+      </select>
+    </div>
+
+    <!-- NAME -->
+    <div class="mb-3">
+      <label class="form-label">Full Name</label>
+      <input type="text" name="full_name" class="form-control" required>
+    </div>
+
+    <!-- EMAIL -->
+    <div class="mb-3">
+      <label class="form-label">Email</label>
+      <input type="email" name="email" class="form-control" required>
+    </div>
+
+    <!-- PASSWORD -->
+    <div class="mb-3">
+      <label class="form-label">Password</label>
+      <input type="password" name="password" class="form-control" required>
+    </div>
+
+    <button class="btn btn-register w-100 mt-2">Sign Up</button>
+
+    <p class="text-center text-small mt-4">
+      Already have an account?
+      <a href="{% url 'login_page' %}" class="fw-semibold">Login</a>
+    </p>
+  </form>
+
+</div>
+
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+<script>
+  const form = document.getElementById("registerForm");
+
+  form.addEventListener("submit", async function(e) {
+    e.preventDefault();
+    if (!form.checkValidity()) return;
+
+    const formData = new FormData(form);
+
+    const response = await fetch("{% url 'register_user' %}", {
+      method: "POST",
+      body: formData,
+      headers: { "X-Requested-With": "XMLHttpRequest" }
+    });
+
+    const result = await response.json();
+
+    if (result.status !== "success") {
+      alert(result.message || "Registration failed");
+      return;
+    }
+
+    const email = formData.get("email");
+    window.location.href = "{% url 'verify_otp_page' %}?email=" + encodeURIComponent(email);
+  });
+</script>
+
+</body>
+</html>

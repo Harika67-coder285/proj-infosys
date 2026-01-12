@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat with {{ other_user.username }}</title>
+    <style>
+        #chatbox { width: 400px; height: 500px; border: 1px solid #ddd; display:flex; flex-direction:column; }
+        #messages { flex:1; padding:10px; overflow-y:auto; background:#f9f9f9; }
+        .msg { margin:5px 0; padding:8px 12px; border-radius:10px; max-width:70%; word-wrap:break-word; }
+        .user { background:#4e73df; color:white; align-self:flex-end; }
+        .other { background:#e2e3f3; color:#333; align-self:flex-start; }
+        #input-area { display:flex; border-top:1px solid #ddd; }
+        #chat_input { flex:1; padding:10px; font-size:14px; }
+        #send_btn { padding:10px; background:#4e73df; color:white; border:none; cursor:pointer; }
+    </style>
+</head>
+<body>
+<h3>Chat with {{ other_user.username }}</h3>
+<div id="chatbox">
+    <div id="messages"></div>
+    <div id="input-area">
+        <input type="text" id="chat_input" placeholder="Type a message...">
+        <button id="send_btn">Send</button>
+    </div>
+</div>
+
+<script>
+const receiverId = parseInt("{{ other_user.id|default:0 }}");
+
+const csrfToken = "{{ csrf_token }}";
+
+if(!receiverId){
+    alert("No user selected to chat with.");
+}
+
+// Function to fetch messages
+function fetchMessages() {
+    fetch(`/fetch/${receiverId}/`)
+    .then(res => res.json())
+    .then(data => {
+        const messagesDiv = document.getElementById("messages");
+        messagesDiv.innerHTML = "";
+        data.forEach(msg => {
+            const div = document.createElement("div");
+            div.classList.add("msg");
+            div.classList.add(msg.sender === "{{ request.user.full_name }}" ? "user" : "other");
+            div.innerText = `${msg.sender}: ${msg.message}`;
+            messagesDiv.appendChild(div);
+        });
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    });
+}
+
+// Send button click
+document.getElementById("send_btn").addEventListener("click", () => {
+    const input = document.getElementById("chat_input");
+    const message = input.value.trim();
+    if(!message) return;
+
+    fetch("/send/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken
+        },
+        body: JSON.stringify({
+            message: message,
+            receiver_id: receiverId
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success){
+            input.value = "";
+            fetchMessages();
+        } else {
+            alert("Message not sent!");
+        }
+    });
+});
+
+document.getElementById("chat_input").addEventListener("keydown", e => {
+    if(e.key === "Enter") document.getElementById("send_btn").click();
+});
+
+setInterval(fetchMessages, 2000);
+fetchMessages();
+</script>
+</body>
+</html>

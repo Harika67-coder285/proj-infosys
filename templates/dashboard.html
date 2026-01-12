@@ -1,0 +1,546 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>User Dashboard - SkillConnect</title>
+
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+  <link href="{% static 'css/main.css' %}" rel="stylesheet">
+  <style>
+    body {
+      background: #f5f7ff;
+      padding-top: 20px; /* Push content below fixed header */
+    }
+       
+        #chat-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #4e73df;
+            color: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            border: none;
+            cursor: pointer;
+            font-size: 28px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+            z-index: 1000;
+        }
+        #chat-btn:hover { background: #2e59d9; }
+
+        /* Chat window */
+        #chatbox {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 350px;
+            max-height: 500px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1000;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity:0; }
+            to { transform: translateY(0); opacity:1; }
+        }
+
+        #chat-header {
+            background: #4e73df;
+            color: white;
+            padding: 12px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #chat-header span { cursor: pointer; font-size:18px; }
+
+        #chat-header a.back-arrow {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            margin-right: 10px;
+        }
+        #chat-header a.back-arrow:hover { color: #d1d5f0; }
+
+        #messages {
+            flex:1;
+            padding: 10px;
+            overflow-y:auto;
+            background: #f9f9f9;
+        }
+
+        .msg { margin: 8px 0; padding:10px 14px; border-radius: 15px; max-width:80%; word-wrap: break-word; }
+        .user { background:#4e73df; color:white; align-self:flex-end; }
+        .bot { background:#e2e3f3; color:#333; align-self:flex-start; }
+        .loader { font-style: italic; color: gray; }
+
+        #input-area {
+            display:flex;
+            border-top:1px solid #ddd;
+        }
+        #user_input {
+            flex:1;
+            padding:12px;
+            border:none;
+            outline:none;
+            font-size:14px;
+        }
+        #send_btn {
+            padding:12px 16px;
+            background:#4e73df;
+            color:white;
+            border:none;
+            cursor:pointer;
+            transition:0.3s;
+        }
+        #send_btn:hover { background:#2e59d9; }
+        @media (max-width: 1199px) {
+
+  /* Mobile menu container */
+  .navmenu ul {
+    inset: 65px 12px auto 12px;   /* ↓ smaller width & top spacing */
+    max-height: 75vh;             /* ↓ limit height */
+    padding: 10px 12px;           /* ↓ less padding */
+    border-radius: 8px;
+  }
+
+  /* Menu items */
+  .navmenu ul li a {
+    font-size: 14px;              /* ↓ smaller text */
+    padding: 8px 10px;            /* ↓ compact links */
+  }
+
+  /* Buttons inside menu */
+  .navmenu .btn,
+  .navmenu .btn-getstarted {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  /* Dropdown submenu */
+  .navmenu .dropdown ul {
+    padding-left: 12px;
+    margin-top: 4px;
+  }
+
+  .navmenu .dropdown ul li a {
+    font-size: 13px;
+    padding: 6px 8px;
+  }
+
+  /* Profile avatar inside menu */
+  .profile-avatar img {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Hamburger icon size */
+  .mobile-nav-toggle {
+    font-size: 22px;   /* ↓ smaller hamburger icon */
+  }
+}
+/* ===================================
+   MOBILE GAP BETWEEN LOGIN & SIGNUP
+   =================================== */
+@media (max-width: 1199px) {
+
+  /* Target login & signup buttons only in mobile nav */
+  #login-link,
+  #signup-link {
+    margin-bottom: 10px;   /* 👈 creates gap between yellow buttons */
+  }
+
+  /* Optional: make buttons full-width & cleaner */
+  #login-link a,
+  #signup-link a {
+    width: 100%;
+    text-align: center;
+    border-radius: 6px;
+  }
+
+}
+  </style>
+</head>
+
+<body>
+
+  <header id="header" class="header d-flex align-items-center fixed-top">
+  <div class="header-container container-fluid container-xl position-relative d-flex align-items-center justify-content-between ">
+
+    <a href="{% url 'home' %}" class="logo d-flex align-items-center me-auto me-xl-0">
+      <img src="{% static 'img/logo1.png'%}" alt="SkillConnect Logo" />
+      <h1 class="sitename" style="color:rgb(225, 165, 12);">SkillConnect</h1>
+    </a>
+    
+    <nav id="navmenu" class="navmenu">
+  <ul>
+    <!-- Home -->
+    <li><a href="{% url 'home' %}" class="active" style="color:rgb(225, 165, 12);">Home</a></li>
+    
+    <li><a href="{% url 'jobs_list' %}" id="not_vis1" style="color:rgb(225, 165, 12);">Find Work</a></li>
+
+    <li><a href="{% url 'browse' %}" id="not_vis2" style="color:rgb(225, 165, 12);">Find Freelancers</a></li>
+    {% if request.session.account_type == "recruiter" %}
+         <li><a href="{% url 'browse' %}" id="browse-link" style="color:rgb(225, 165, 12);">Find Freelancers</a></li>
+        <li>
+          <a href="{% url 'post_job' %}" class="btn" style="padding:10px;color:white;background-color: rgb(225, 165, 12);;">
+            <i class="bi bi-plus-lg"></i> Post Job
+          </a>
+
+        </li>
+       
+</li>
+        {% endif %}
+
+{% if request.session.account_type == "freelancer" %}
+<li><a href="{% url 'jobs_list' %}" style="color:rgb(225, 165, 12);">Find Work</a></li>
+<li class="dropdown">
+  <a href="#" style="color:rgb(225, 165, 12);">
+    Notifications
+    {% if notification_count > 0 %}
+      <span class="badge bg-primary">{{ notification_count }}</span>
+    {% endif %}
+  </a>
+
+  <ul>
+    {% for n in freelancer_notifications %}
+      <li>
+        <a href="{% url 'freelancer_contracts' %}" >
+          {{ n.message }}
+        </a>
+      </li>
+    {% empty %}
+      <li><span class="dropdown-item">No notifications</span></li>
+    {% endfor %}
+  </ul>
+  <li>
+  <a href="{%url 'saved_jobs'%}" style="color:rgb(225, 165, 12);">Saved Jobs</a>
+  </li>
+</li>
+
+
+
+{% endif %}
+
+<li id="profile-link" class="dropdown" style="display:none;">
+    <a href="#" class="profile-avatar dropdown-toggle">
+        {% if app_user and app_user.photo %}
+            <img src="{{ app_user.photo.url }}" alt="Profile">
+        {% else %}
+            <img src="{% static 'img/image.png' %}" alt="Profile">
+        {% endif %}
+    </a>
+    {% if request.session.account_type == "recruiter" %}
+    <ul class="dropdown-menu">
+        <li><a href="{% url 'recruiter_dashboard' %}">Analysis</a></li>
+        <li><a href="{% url 'my_jobs' %}">My Jobs</a></li>
+        <li><a href="{% url 'contracts' %}">My Contracts</a></li>
+               <li>
+  <a href="{%url 'recruiter_settings'%}">Settings</a>
+  <li><a href="{%url 'chats'%}">Chats</a></li>
+</li>
+    </ul>
+    {% else %}
+        <ul class="dropdown-menu">
+        <li><a href="{% url 'freelancer_dashboard' %}">Analysis</a></li>
+        <li><a href="{% url 'jobs_applied' %}">Jobs Applied</a></li>
+        <li><a href="{% url 'freelancer_contracts' %}">Contract Requests</a></li>
+        <li>
+  <a href="{%url 'freelancer_settings'%}">Settings</a>
+  
+</li>
+<li><a href="{%url 'chats'%}">Chats</a></li>
+    </ul>
+
+    {%endif%}
+</li>
+    <!-- Profile Avatar -->
+<!-- Profile Avatar -->
+<!-- Profile Avatar -->
+
+
+<!-- Login / Signup -->
+<li id="login-link"><a href="{% url 'login_page' %}" class="btn-getstarted">Login</a></li>
+<li id="signup-link"><a href="{% url 'register_page' %}" class="btn-getstarted">Sign Up</a></li>
+
+<!-- Logout -->
+<li id="header-logout" style="display:none;">
+    <a href="javascript:void(0)" onclick="logoutHeader()" class="btn-getstarted" style="padding:10px">Logout</a>
+</li>
+
+
+  </ul>
+
+  <i class="mobile-nav-toggle d-xl-none bi bi-list" style="color:white"></i>
+</nav>
+
+  </div>
+</header>
+
+  <!-- MAIN DASHBOARD -->
+  <div class="container-fluid mt-4">
+   <div class="layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <h2 class="logo">Dashboard</h2>
+
+        <nav>
+            <a href="#" class="active">
+                <span>📊</span> Dashboard
+            </a>
+            <a href="#"><span>💼</span> Jobs</a>
+            <a href="#"><span>💬</span> Messages</a>
+            <a href="#"><span>👛</span> Wallet</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content">
+
+        <header class="topbar">
+            <h3>❓ Help Center</h3>
+            <div class="icons">
+                <span class="bell">🔔</span>
+            </div>
+        </header>
+
+        <h1 class="title">Analytics Dashboard</h1>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+
+            <div class="stat-card">
+                <p>Jobs Applied</p>
+                <h2>0</h2>
+            </div>
+
+            <div class="stat-card">
+                <p>Earnings (12 months)</p>
+                <h2>$0</h2>
+            </div>
+
+            <div class="stat-card">
+                <p>Profile Views</p>
+                <h2>0</h2>
+            </div>
+
+            <div class="stat-card">
+                <p>Impressions & Clicks</p>
+                <h2>0</h2>
+            </div>
+
+        </div>
+
+        <!-- Chart -->
+        <div class="chart-card">
+            <canvas id="earnChart"></canvas>
+        </div>
+
+    </main>
+
+    <!-- Right Profile Panel -->
+    <aside class="profile-panel">
+
+        <h2>Profile</h2>
+
+        <div class="avatar">
+            <a href="{% url 'dashboard' %}" class="">
+        {% if app_user and app_user.photo %}
+    <img src="{{ app_user.photo.url }}">
+{% else %}
+    <img src="{% static 'img/image.png' %}">
+{% endif %}
+
+    </a>
+
+        </div>
+
+        <ul class="profile-menu">
+            <li>Editing Options</li>
+            <li>Personal Info</li>
+            <li>Portfolio</li>
+            <li>Theme Changing</li>
+            <li>Account Settings</li>
+            <li>Contact Info</li>
+            <li>Profile Setting</li>
+            <li>My Profile</li>
+            <li>Password & Security</li>
+        </ul>
+
+    </aside>
+
+</div>
+<!-- Floating Chat Icon -->
+<button id="chat-btn">💬</button>
+<div id="chatbox" style="display: none;">
+    <div id="chat-header">
+        <a href="{% url 'dashboard' %}" class="back-arrow">←</a>
+        Support Chat
+        <span id="close-chat">×</span>
+    </div>
+    <div id="messages"></div>
+    <div id="input-area">
+        <input id="user_input" type="text" placeholder="Ask a question..." />
+        <button id="send_btn">Send</button>
+    </div>
+</div>
+  </div>
+
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  
+document.addEventListener("DOMContentLoaded", () => {
+  const ctx = document.getElementById('earnChart').getContext('2d');
+
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"],
+        datasets: [{
+            label: "Earnings",
+            data: [1, 2, 1.5, 2.5, 3, 4, 3.5, 5, 4.8, 5.5, 6],
+            fill: true,
+            borderWidth: 3,
+            tension: 0.4
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false }},
+    }
+});
+    const userId = "{{ request.session.user_id|default:'' }}";
+    const accountType = "{{ request.session.account_type|default:''|escapejs }}";
+
+    const profileLink = document.getElementById("profile-link");
+    const loginLink = document.getElementById("login-link");
+    const signupLink = document.getElementById("signup-link");
+    const headerLogout = document.getElementById("header-logout");
+    const browseLink = document.getElementById("browse-link");
+    const categoriesLink = document.getElementById("categories-link"); // 👈 new
+
+    if (userId) {
+        if (profileLink) profileLink.style.display = "flex";
+        if (headerLogout) headerLogout.style.display = "block";
+        if (loginLink) loginLink.style.display = "none";
+        if (signupLink) signupLink.style.display = "none";
+        if (browseLink && accountType!== "freelancer") {
+            browseLink.style.display = "block";
+            browseLink.innerText = "Find Freelancers";
+        }
+        if (browseLink && accountType=== "freelancer") {
+            browseLink.style.display = "none";
+        }
+        if (categoriesLink && accountType!== "freelancer") categoriesLink.style.display = "block"; // 👈 show categories for logged-in users
+        if (categoriesLink && accountType=== "freelancer") categoriesLink.style.display = "none"; // 👈 show categories for logged-in users
+
+    } else {
+        if (profileLink) profileLink.style.display = "none";
+        if (headerLogout) headerLogout.style.display = "none";
+        if (loginLink) loginLink.style.display = "block";
+        if (signupLink) signupLink.style.display = "block";
+        if (browseLink) browseLink.style.display = "none";
+        if (categoriesLink) categoriesLink.style.display = "none"; // 👈 hide categories for guests
+    }
+// Toggle chat window
+const chatBtn = document.getElementById("chat-btn");
+const chatbox = document.getElementById("chatbox");
+const closeBtn = document.getElementById("close-chat");
+
+chatBtn.addEventListener("click", () => chatbox.style.display = "flex");
+closeBtn.addEventListener("click", () => chatbox.style.display = "none");
+
+// CSRF helper
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+            if (cookie.startsWith(name + "=")) {
+                cookieValue = cookie.substring(name.length + 1);
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Chat functions
+function appendMessage(text, sender, loader=false) {
+    const msgDiv = document.createElement("div");
+    msgDiv.classList.add("msg", sender);
+    if(loader) msgDiv.classList.add("loader");
+    msgDiv.innerText = text;
+    document.getElementById("messages").appendChild(msgDiv);
+    document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight;
+    return msgDiv;
+}
+
+function sendMessage() {
+    const input = document.getElementById("user_input");
+    const message = input.value.trim();
+    if (!message) return;
+
+    appendMessage(message, "user");
+    input.value = "";
+
+    const loaderDiv = appendMessage("Bot is typing...", "bot", true);
+
+    fetch("/chatbot/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken")
+        },
+        body: JSON.stringify({ message })
+    })
+    .then(res => res.json())
+    .then(data => {
+        loaderDiv.remove();
+        appendMessage(data.reply, "bot");
+    })
+    .catch(err => {
+        loaderDiv.remove();
+        appendMessage("Error: Could not reach server.", "bot");
+        console.error(err);
+    });
+}
+
+// Button click & Enter key
+document.getElementById("send_btn").addEventListener("click", sendMessage);
+document.getElementById("user_input").addEventListener("keydown", function(e) {
+    if(e.key==="Enter") sendMessage();
+});
+
+});
+
+function logoutHeader() {
+    window.location.href = "{% url 'logout_user' %}";
+}
+
+</script>
+
+</body>
+</html> 

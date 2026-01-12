@@ -1,0 +1,66 @@
+<!-- chat_list.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chats</title>
+  <style>
+    .chat-list {
+  max-width: 420px;
+  margin: auto;
+}
+
+.chat-item {
+  display: block;
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  text-decoration: none;
+  color: black;
+}
+
+.chat-item:hover {
+  background: #f5f5f5;
+}
+
+.chat-name {
+  font-weight: bold;
+}
+
+.last-message {
+  color: gray;
+  font-size: 14px;
+}
+
+  </style>
+</head>
+<body>
+
+<h3>Your Chats</h3>
+
+<div class="chat-list">
+  {% for chat in chats %}
+    <a class="chat-item"
+       href="{% url 'chat' chat.freelancer.id chat.recruiter.id %}">
+
+      <div class="chat-name">
+        {% if role == 'freelancer' %}
+          {{ chat.recruiter.name }}
+        {% else %}
+          {{ chat.freelancer.name }}
+        {% endif %}
+      </div>
+
+      <div class="last-message">
+        {% if chat.last_message %}
+          {{ chat.last_message.text|truncatechars:30 }}
+        {% else %}
+          No messages yet
+        {% endif %}
+      </div>
+    </a>
+  {% empty %}
+    <p>No chats yet</p>
+  {% endfor %}
+</div>
+
+</body>
+</html>

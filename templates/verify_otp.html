@@ -1,0 +1,153 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Verify OTP</title>
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <style>
+    .letter-spacing {
+      letter-spacing: 0.4em;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="card shadow-lg border-0" style="max-width: 420px; width: 100%;">
+    <div class="card-body p-4">
+
+      <!-- Header -->
+      <div class="text-center mb-4">
+        <h4 class="fw-bold">Verify Your Email</h4>
+        <p class="text-muted small">
+          We’ve sent a 6-digit OTP to<br>
+          <strong>{{ email }}</strong>
+        </p>
+      </div>
+
+      <!-- OTP Form -->
+      <form id="otpForm">
+        {% csrf_token %}
+        <input type="hidden" id="email" value="{{ email }}">
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Enter OTP</label>
+          <input
+            type="text"
+            id="otp"
+            class="form-control form-control-lg text-center letter-spacing"
+            maxlength="6"
+            required
+          >
+        </div>
+
+        <button type="submit" class="btn btn-lg w-100" style="background-color: rgb(225, 165, 12);">
+          Verify & Continue
+        </button>
+      </form>
+
+      <!-- Message -->
+      <div id="msg" class="text-center mt-3 small"></div>
+
+      <!-- Resend -->
+      <div class="text-center mt-4">
+        <p class="small text-muted mb-1">Didn’t receive the code?</p>
+        <button id="resendBtn" class="btn btn-link p-0 fw-semibold" disabled>
+          Resend OTP (<span id="timer">30</span>s)
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+/* CSRF helper */
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie) {
+    document.cookie.split(';').forEach(cookie => {
+      cookie = cookie.trim();
+      if (cookie.startsWith(name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+      }
+    });
+  }
+  return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+
+/* Verify OTP */
+document.getElementById("otpForm").onsubmit = async function (e) {
+  e.preventDefault();
+
+  const email = document.getElementById("email").value;
+  const otp = document.getElementById("otp").value;
+
+  const response = await fetch("{% url 'verify_otp' %}", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "X-CSRFToken": csrftoken
+    },
+    body: new URLSearchParams({ email, otp })
+  });
+
+  const result = await response.json();
+  document.getElementById("msg").innerText = result.message;
+
+  if (result.status === "success") {
+    setTimeout(() => {
+      window.location.href = "/" + result.redirect_url + "/";
+    }, 1000);
+  }
+};
+
+/* Resend OTP */
+let timeLeft = 30;
+const resendBtn = document.getElementById("resendBtn");
+const timerSpan = document.getElementById("timer");
+
+const startTimer = () => {
+  resendBtn.disabled = true;
+  const interval = setInterval(() => {
+    timeLeft--;
+    timerSpan.innerText = timeLeft;
+    if (timeLeft <= 0) {
+      clearInterval(interval);
+      resendBtn.disabled = false;
+      resendBtn.innerText = "Resend OTP";
+    }
+  }, 1000);
+};
+
+startTimer();
+
+resendBtn.onclick = async () => {
+  resendBtn.disabled = true;
+  resendBtn.innerText = "Sending...";
+
+  const email = document.getElementById("email").value;
+
+  const response = await fetch("{% url 'resend_otp' %}", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "X-CSRFToken": csrftoken
+    },
+    body: new URLSearchParams({ email })
+  });
+
+  const result = await response.json();
+  document.getElementById("msg").innerText = result.message;
+
+  timeLeft = 30;
+  timerSpan.innerText = timeLeft;
+  resendBtn.innerHTML = `Resend OTP (<span id="timer">30</span>s)`;
+  startTimer();
+};
+</script>
+
+</body>
+</html>

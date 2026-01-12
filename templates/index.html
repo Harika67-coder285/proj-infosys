@@ -1,0 +1,780 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Index - SkillConnect Bootstrap Template</title>
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+
+  <!-- Favicons -->
+
+  <link href="{% static 'img/favicon.png'%}" rel="icon" />
+  <link href="{% static 'img/apple-touch-icon.png'%}" rel="apple-touch-icon" />
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet" />
+
+
+<link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" />
+<link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet" />
+<link href="{% static 'vendor/aos/aos.css' %}" rel="stylesheet" />
+<link href="{% static 'vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet" />
+<link href="{% static 'vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet" />
+
+<link href="{% static 'css/main.css' %}?v=8" rel="stylesheet" />
+
+<style>
+ 
+
+  .badge {
+  font-size: 11px;
+  padding: 4px 6px;
+  margin-left: 5px;
+  vertical-align: middle;
+}
+.freelancer-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.freelancer-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.15);
+}
+
+.freelancer-avatar {
+  padding: 20px;
+}
+
+.freelancer-avatar img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.freelancer-body {
+  padding: 0 20px 20px;
+  flex-grow: 1;
+}
+
+.freelancer-details {
+  list-style: none;
+  padding: 0;
+  margin-top: 12px;
+  font-size: 0.85rem;
+}
+
+.freelancer-details li {
+  margin-bottom: 6px;
+}
+
+.freelancer-footer {
+  padding: 15px 20px;
+  background: #f8f9fa;
+}
+#hero {
+  min-height: 100vh;
+}
+
+/* Video behaves like background-image */
+.hero-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* same as background-size: cover */
+  z-index: 0;
+}
+
+/* Dark overlay for readability */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1;
+}
+
+/* Content above video */
+#hero .container {
+  z-index: 2;
+}
+.profile-avatar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #fbbf24;
+}
+.freelancer-card {
+  height: auto;
+}
+.freelancer-grid {
+  display: grid;
+  gap: 24px;
+  width: 100%;
+}
+
+/* Desktop */
+@media (min-width: 992px) {
+  .freelancer-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Tablet */
+@media (min-width: 576px) and (max-width: 991px) {
+  .freelancer-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile */
+@media (max-width: 575px) {
+  .freelancer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* ================================
+   SMALLER MOBILE HAMBURGER MENU
+   ================================ */
+@media (max-width: 1199px) {
+
+  /* Mobile menu container */
+  .navmenu ul {
+    inset: 65px 12px auto 12px;   /* ↓ smaller width & top spacing */
+    max-height: 75vh;             /* ↓ limit height */
+    padding: 10px 12px;           /* ↓ less padding */
+    border-radius: 8px;
+  }
+
+  /* Menu items */
+  .navmenu ul li a {
+    font-size: 14px;              /* ↓ smaller text */
+    padding: 8px 10px;            /* ↓ compact links */
+  }
+
+  /* Buttons inside menu */
+  .navmenu .btn,
+  .navmenu .btn-getstarted {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  /* Dropdown submenu */
+  .navmenu .dropdown ul {
+    padding-left: 12px;
+    margin-top: 4px;
+  }
+
+  .navmenu .dropdown ul li a {
+    font-size: 13px;
+    padding: 6px 8px;
+  }
+
+  /* Profile avatar inside menu */
+  .profile-avatar img {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Hamburger icon size */
+  .mobile-nav-toggle {
+    font-size: 22px;   /* ↓ smaller hamburger icon */
+  }
+}
+
+@media (max-width: 1199px) {
+
+  /* Post Job & Logout buttons */
+  .navmenu .btn,
+  .navmenu .btn-getstarted {
+    display: inline-flex !important;
+    width: auto !important; 
+    margin: 6px auto;     
+    padding:10px;           /* 👈 center horizontally */
+    border-radius: 6px;
+  }
+
+  /* Center buttons inside list */
+
+
+}
+@media (max-width: 1199px) {
+
+  .mobile-nav-active .navmenu ul {
+    background-color: white !important;  /* 👈 dark background */
+  }
+
+  /* Optional: border for card look */
+  .mobile-nav-active .navmenu ul {
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  }
+
+}
+.dropdown-menu li a{
+    color:black !important;
+}
+</style>
+</head>
+
+<body class="index-page">
+
+ 
+  <div class="main_content">
+  <header id="header" class="header d-flex align-items-center fixed-top">
+  <div class="header-container container-fluid container-xl position-relative d-flex align-items-center justify-content-between ">
+
+    <a href="{% url 'home' %}" class="logo d-flex align-items-center me-auto me-xl-0">
+      <img src="{% static 'img/logo1.png'%}" alt="SkillConnect Logo" />
+      <h1 class="sitename" style="color:rgb(225, 165, 12);">SkillConnect</h1>
+    </a>
+    
+    <nav id="navmenu" class="navmenu">
+  <ul>
+    <!-- Home -->
+    <li><a href="{% url 'home' %}" class="active" style="color:rgb(225, 165, 12);">Home</a></li>
+    
+    <li><a href="{% url 'jobs_list' %}" id="not_vis1" style="color:rgb(225, 165, 12);">Find Work</a></li>
+
+    <li><a href="{% url 'browse' %}" id="not_vis2" style="color:rgb(225, 165, 12);">Find Freelancers</a></li>
+    {% if request.session.account_type == "recruiter" %}
+         <li><a href="{% url 'browse' %}" id="browse-link" style="color:rgb(225, 165, 12);">Find Freelancers</a></li>
+        <li>
+          <a href="{% url 'post_job' %}" class="btn" style="padding:10px;color:white;background-color: rgb(225, 165, 12);;">
+            <i class="bi bi-plus-lg"></i> Post Job
+          </a>
+
+        </li>
+       
+</li>
+        {% endif %}
+
+{% if request.session.account_type == "freelancer" %}
+<li><a href="{% url 'jobs_list' %}" style="color:rgb(225, 165, 12);">Find Work</a></li>
+<li class="dropdown">
+  <a href="#" style="color:rgb(225, 165, 12);">
+    Notifications
+    {% if notification_count > 0 %}
+      <span class="badge bg-primary">{{ notification_count }}</span>
+    {% endif %}
+  </a>
+
+  <ul>
+    {% for n in freelancer_notifications %}
+      <li>
+        <a href="{% url 'freelancer_contracts' %}" >
+          {{ n.message }}
+        </a>
+      </li>
+    {% empty %}
+      <li><span class="dropdown-item">No notifications</span></li>
+    {% endfor %}
+  </ul>
+  <li>
+  <a href="{%url 'saved_jobs'%}" style="color:rgb(225, 165, 12);">Saved Jobs</a>
+  </li>
+</li>
+
+
+
+{% endif %}
+
+<li id="profile-link" class="dropdown" style="display:none;">
+    <a href="#" class="profile-avatar dropdown-toggle">
+        {% if app_user and app_user.photo %}
+            <img src="{{ app_user.photo.url }}" alt="Profile">
+        {% else %}
+            <img src="{% static 'img/image.png' %}" alt="Profile">
+        {% endif %}
+    </a>
+    {% if request.session.account_type == "recruiter" %}
+    <ul class="dropdown-menu">
+        <li><a href="{% url 'recruiter_dashboard' %}">Analysis</a></li>
+        <li><a href="{% url 'my_jobs' %}">My Jobs</a></li>
+        <li><a href="{% url 'contracts' %}">My Contracts</a></li>
+               <li>
+  <a href="{%url 'recruiter_settings'%}">Settings</a>
+  <li><a href="{%url 'chats'%}">Chats</a></li>
+</li>
+    </ul>
+    {% else %}
+        <ul class="dropdown-menu">
+        <li><a href="{% url 'freelancer_dashboard' %}">Analysis</a></li>
+        <li><a href="{% url 'jobs_applied' %}">Jobs Applied</a></li>
+        <li><a href="{% url 'freelancer_contracts' %}">Contract Requests</a></li>
+        <li>
+  <a href="{%url 'freelancer_settings'%}">Settings</a>
+  
+</li>
+<li><a href="{%url 'chats'%}">Chats</a></li>
+    </ul>
+
+    {%endif%}
+</li>
+    <!-- Profile Avatar -->
+<!-- Profile Avatar -->
+<!-- Profile Avatar -->
+
+
+<!-- Login / Signup -->
+<li id="login-link"><a href="{% url 'login_page' %}" class="btn-getstarted" style="margin-right:15px;color:white">Login</a></li>
+<li id="signup-link"><a href="{% url 'register_page' %}" class="btn-getstarted" style="color:white">Sign Up</a></li>
+
+<!-- Logout -->
+<li id="header-logout" style="display:none;">
+    <a href="javascript:void(0)" onclick="logoutHeader()" class="btn-getstarted" style="padding:10px">Logout</a>
+</li>
+
+
+  </ul>
+
+  <i class="mobile-nav-toggle d-xl-none bi bi-list" style="color:white"></i>
+</nav>
+
+  </div>
+</header>
+
+
+
+  <main class="main">
+    <!-- HERO, ABOUT, FEATURES... (kept intact) -->
+    <!-- Hero Section -->
+<section id="hero" class="hero section position-relative overflow-hidden">
+
+  <!-- Background Video -->
+  <video class="hero-video" autoplay muted loop playsinline>
+    <source src="{% static 'videos/v2.mp4' %}" type="video/mp4">
+  </video>
+
+  <!-- Overlay -->
+  <div class="hero-overlay"></div>
+
+  <!-- Existing Content -->
+  <div class="container position-relative" data-aos="fade-up" data-aos-delay="100">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <div class="hero-content text-white" data-aos="fade-up" data-aos-delay="200" style="margin-top:5%">
+
+          <h1 class="mb-1" style="color:rgb(225, 165, 12)">
+            Hire the best freelancers for any job, online.
+          </h1>
+          <h4 style="color:#fffefe" >
+             <ul class="mb-4 mb-md-5 mt-4">
+            <li>World's largest freelance marketplace</li>
+            <li>Any job you can possibly think of</li>
+            <li>Save up to 90% & get quotes for free</li>
+            <li>Pay only when you're 100% happy</li>
+          </ul>
+          </h4>
+         
+
+          <div class="hero-buttons">
+            <a href="{% url 'register_page' %}"
+               class="me-0 me-sm-2 mx-1" style="border-radius:5px;font-size: 18px; padding:20px 25px;background-color:rgb(225, 165, 12);color:white;font-weight: bold;">
+              Hire a Freelancer
+            </a>
+
+            <a href="{% url 'register_page' %}"
+               class="btn-hover btn btn-link mt-2 mt-sm-0" style="border-radius:5px;font-size: 18px; padding:12px 25px;color:white;font-weight: bold;"> 
+              <span>Start Freelancing</span>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<section class="section py-5" style="background-color: white;" >
+  <div class="container" data-aos="fade-up">
+
+    <div class="text-center mb-5">
+      <h2 class="fw-bold" >Featured Jobs</h2>
+      <p style="color:black">Explore top freelance opportunities from verified recruiters</p>
+    </div>
+
+    <div class="row g-4">
+
+      {% for job in jobs %}
+      <div class="col-lg-4 col-md-6">
+        <div class="job-card h-100">
+
+          <div class="job-card-body">
+            <h5 class="job-title">{{ job.title }}</h5>
+            <p class="job-desc">
+              {{ job.description|truncatechars:120 }}
+            </p>
+
+            <div class="job-meta">
+              <p ><b>Work Type:</b> {{ job.work_type }}</p>
+              <p><b>Payment Type:</b> {{ job.payment_type }}</b></p>
+              <p><b>Skills:</b> {{ job.skills }}</p>
+              <p><b>Experience:</b> {{ job.experience_level }}</p>
+              <p><b>Duration:</b> {{ job.duration }}</p>
+            </div>
+
+          </div>
+
+          <div class="job-card-footer">
+            {% if user_logged_in %}
+              {% if job.id in applied_job_ids %}
+                <button class="btn btn-secondary w-100" disabled>
+                  Already Applied
+                </button>
+              {% else %}
+                <a href="{% url 'apply_job' job.id %}" class="btn btn-primary w-100">
+                  Apply Now
+                </a>
+              {% endif %}
+            {% else %}
+              <a href="{% url 'register_page' %}" class="btn w-100"
+        style="
+          border: 2px solid rgb(225, 165, 12);
+          color: rgb(225, 165, 12);
+          background-color: transparent;
+          transition: all 0.3s ease;
+        "
+        onmouseover="this.style.backgroundColor='rgb(225,165,12)'; this.style.color='white';"
+        onmouseout="this.style.backgroundColor='transparent'; this.style.color='rgb(225,165,12)';">
+                Login to Apply
+              </a>
+            {% endif %}
+          </div>
+
+        </div>
+      </div>
+      {% empty %}
+      <p class="text-center text-muted">No jobs available</p>
+      {% endfor %}
+
+    </div>
+  </div>
+</section>
+
+<section class="section">
+   <div class="container" data-aos="fade-up"> 
+  <div class=" text-center"> 
+    <h2>Top Freelancers</h2>
+     <p style="color:white">Highly rated professionals ready to work</p> 
+</div> 
+ <div class="container-fluid mt-5">
+    {% if freelancers %}
+    <div class="freelancer-grid">
+
+      {% for f in freelancers %}
+        <div class="card text-center p-3 shadow-sm">
+          {%if f.photo %}
+     <img src="{{f.photo.url}}" class="rounded-circle mx-auto" style="width:40px;height:40px"> 
+      {% else %}
+            <img src="{% static 'img/image.png' %}" class="rounded-circle mx-auto" style="width:40px;height:40px" alt="Profile">
+        {% endif %}
+     <h6 class="mt-3">{{f.job_role}}</h6> 
+     <small class="text-muted">{{f.experience_level}}</small> 
+    </div> 
+      {% endfor %}
+
+    </div>
+    {% else %}
+      <p class="text-center text-muted">No freelancers found.</p>
+    {% endif %}
+ 
+</section>
+
+
+<section class="section bg-light">
+  <div class="container" data-aos="fade-up">
+    <div class="section-title text-center">
+      <h2>How Hiring Works</h2>
+    </div>
+
+    <div class="row text-center gy-4">
+      <div class="col-md-3">
+        <i class="bi bi-pencil-square fs-1 text-primary"></i>
+        <h5 class="mt-2">Post Job</h5>
+        <p>Create job listing in minutes</p>
+      </div>
+
+      <div class="col-md-3">
+        <i class="bi bi-people fs-1 text-primary"></i>
+        <h5 class="mt-2">Review Proposals</h5>
+        <p>Shortlist best candidates</p>
+      </div>
+
+      <div class="col-md-3">
+        <i class="bi bi-camera-video fs-1 text-primary"></i>
+        <h5 class="mt-2">Interview</h5>
+        <p>Schedule calls easily</p>
+      </div>
+
+      <div class="col-md-3">
+        <i class="bi bi-check-circle fs-1 text-primary"></i>
+        <h5 class="mt-2">Hire & Work</h5>
+        <p>Start project confidently</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section">
+  <div class="container" data-aos="fade-up">
+    <div class="row gy-4">
+      <div class="col-md-6">
+        <h3>Why Choose SkillConnect?</h3>
+        <ul style="color:white">
+          <li>✔ Verified freelancers & recruiters</li>
+          <li>✔ Secure contracts & communication</li>
+          <li>✔ Interview scheduling system</li>
+          <li>✔ Real-time messaging</li>
+          <li>✔ Professional dashboards</li>
+        </ul>
+      </div>
+
+      <div class="col-md-6">
+        <img src="{% static 'img/undraw_freelancer_vibs.svg' %}" style="height:200px" class="img-fluid">
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section bg-white text-black text-center">
+  <div class="container">
+    <h2>Start Your Freelancing Journey Today</h2>
+    <p class="mt-2">Join thousands of professionals on SkillConnect</p>
+    <a href="{% url 'register_page' %}" class="btn btn-light btn-lg mt-3">
+      Get Started
+    </a>
+  </div>
+</section>
+
+  </main>
+
+<footer id="footer" class="footer">
+  <div class="container footer-top">
+    <div class="row gy-4 align-items-start text-center text-md-start">
+
+      <!-- About -->
+      <div class="col-lg-4 col-md-6 footer-about">
+        <a href="{% url 'home' %}" class="logo d-flex justify-content-center justify-content-md-start align-items-center">
+          <span class="sitename">SkillConnect</span>
+        </a>
+
+        <div class="footer-contact pt-3">
+          <p>A108 Adam Street</p>
+          <p>New York, NY 535022</p>
+          <p class="mt-3"><strong>Phone:</strong> <span>+1 5589 55488 55</span></p>
+          <p><strong>Email:</strong> <span>info@example.com</span></p>
+        </div>
+
+        <div class="social-links d-flex justify-content-center justify-content-md-start mt-4">
+          <a href="#"><i class="bi bi-twitter-x"></i></a>
+          <a href="#"><i class="bi bi-facebook"></i></a>
+          <a href="#"><i class="bi bi-instagram"></i></a>
+          <a href="#"><i class="bi bi-linkedin"></i></a>
+        </div>
+      </div>
+
+      <!-- Useful Links -->
+      <div class="col-lg-2 col-md-3 footer-links">
+        <h4>Useful Links</h4>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About us</a></li>
+          <li><a href="#">Services</a></li>
+          <li><a href="#">Terms of service</a></li>
+          <li><a href="#">Privacy policy</a></li>
+        </ul>
+      </div>
+
+      <!-- Services -->
+      <div class="col-lg-2 col-md-3 footer-links">
+        <h4>Our Services</h4>
+        <ul>
+          <li><a href="#">Web Design</a></li>
+          <li><a href="#">Web Development</a></li>
+          <li><a href="#">Product Management</a></li>
+          <li><a href="#">Marketing</a></li>
+          <li><a href="#">Graphic Design</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="container copyright text-center mt-4">
+    <p>© <span>Copyright</span>
+      <strong class="px-1 sitename">SkillConnect</strong>
+      <span>All Rights Reserved</span>
+    </p>
+    <div class="credits">
+      Built for demo by <strong>SkillConnect</strong> - powered by iLanding template
+    </div>
+  </div>
+</footer>
+
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i
+      class="bi bi-arrow-up-short"></i></a>
+      </div>
+      <!-- Floating Chat Button -->
+
+
+</div>
+  <!-- Vendor JS Files -->
+ <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'vendor/php-email-form/validate.js' %}"></script>
+<script src="{% static 'vendor/aos/aos.js' %}"></script>
+<script src="{% static 'vendor/glightbox/js/glightbox.min.js' %}"></script>
+<script src="{% static 'vendor/swiper/swiper-bundle.min.js' %}"></script>
+<script src="{% static 'vendor/purecounter/purecounter_vanilla.js' %}"></script>
+
+  <!-- Main JS File (keeps your original if present) -->
+  <script src="{% static 'js/skillconnect.js'%}"></script>
+
+  <!-- Small inline script: fixes mobile nav & dropdowns so header works even if external JS fails -->
+  <script>
+
+document.addEventListener("DOMContentLoaded", () => {
+    const userId = "{{ request.session.user_id|default:'' }}";
+    const accountType = "{{ request.session.account_type|default:''|escapejs }}";
+
+    const profileLink = document.getElementById("profile-link");
+    const loginLink = document.getElementById("login-link");
+    const signupLink = document.getElementById("signup-link");
+    const headerLogout = document.getElementById("header-logout");
+    const browseLink = document.getElementById("browse-link");
+    const categoriesLink = document.getElementById("categories-link"); // 👈 new
+    const findworkLink=document.getElementById("not_vis1");
+    const findfreelancersLink=document.getElementById("not_vis2");
+    if (userId) {
+        if (profileLink) profileLink.style.display = "flex";
+        if (headerLogout) headerLogout.style.display = "block";
+        if (loginLink) loginLink.style.display = "none";
+        if (signupLink) signupLink.style.display = "none";
+        if (browseLink && accountType!== "freelancer") {
+            browseLink.style.display = "block";
+            browseLink.innerText = "Find Freelancers";
+        }
+        if (browseLink && accountType=== "freelancer") {
+            browseLink.style.display = "none";
+        }
+        if(findworkLink){
+          findworkLink.style.display="none";
+        }
+        if(findfreelancersLink){
+          findfreelancersLink.style.display="none";
+        }
+    } else {
+        if (profileLink) profileLink.style.display = "none";
+        if (headerLogout) headerLogout.style.display = "none";
+        if (loginLink) loginLink.style.display = "block";
+        if (signupLink) signupLink.style.display = "block";
+        if (browseLink) browseLink.style.display = "none";
+        if(findworkLink){
+          findworkLink.style.display="block";
+        }
+if(findfreelancersLink){
+          findfreelancersLink.style.display="block";
+        }
+    }
+});
+
+function logoutHeader() {
+    window.location.href = "{% url 'logout_user' %}";
+}
+
+    (function () {
+      // Mobile nav toggle
+      const mobileToggle = document.querySelector('.mobile-nav-toggle');
+      const navmenu = document.querySelector('#navmenu');
+      if (mobileToggle && navmenu) {
+        mobileToggle.addEventListener('click', function (e) {
+          e.preventDefault();
+          document.body.classList.toggle('mobile-nav-active');
+          // toggle icon class
+          this.classList.toggle('bi-list');
+          this.classList.toggle('bi-x');
+        });
+      }
+
+      // Desktop dropdowns: allow hover to show (handled by CSS), but ensure nested dropdowns work on click for mobile
+      // Add click handlers to .dropdown > a for mobile behavior
+      const dropdownToggles = document.querySelectorAll('#navmenu .dropdown > a.dropdown-toggle, #navmenu .dropdown > a');
+      dropdownToggles.forEach(btn => {
+        btn.addEventListener('click', function (e) {
+          // On small screens, toggle the submenu
+          if (window.innerWidth <= 1199) {
+            e.preventDefault();
+            const parentLi = this.parentElement;
+            const submenu = parentLi.querySelector('ul');
+            if (!submenu) return;
+            const isOpen = submenu.classList.contains('dropdown-active');
+            // hide other open dropdowns at same level (optional)
+            parentLi.querySelectorAll('.dropdown-active').forEach(el => el.classList.remove('dropdown-active'));
+            if (!isOpen) submenu.classList.add('dropdown-active');
+            else submenu.classList.remove('dropdown-active');
+          }
+        });
+      });
+
+      // Close mobile nav when clicking outside (optional)
+      document.addEventListener('click', function (e) {
+        const target = e.target;
+        if (!navmenu.contains(target) && !mobileToggle.contains(target) && document.body.classList.contains('mobile-nav-active')) {
+          document.body.classList.remove('mobile-nav-active');
+          if (mobileToggle) {
+            mobileToggle.classList.remove('bi-x');
+            mobileToggle.classList.add('bi-list');
+          }
+        }
+      });
+
+      // Accessibility: close mobile nav on ESC
+      document.addEventListener('keyup', function (e) {
+        if (e.key === 'Escape' && document.body.classList.contains('mobile-nav-active')) {
+          document.body.classList.remove('mobile-nav-active');
+          if (mobileToggle) {
+            mobileToggle.classList.remove('bi-x');
+            mobileToggle.classList.add('bi-list');
+          }
+        }
+      });
+
+      // Init AOS if available
+      if (window.AOS) AOS.init();
+
+      // Basic fallback for glightbox/purecounter/swiper if those libs exist in your assets
+      if (window.PureCounter) { try { new PureCounter(); } catch (e) {} }
+      if (window.GLightbox) { try { GLightbox && GLightbox({ selector: '.glightbox' }); } catch (e) {} }
+      // Swiper config: if you have your custom init in skillconnect.js it will run instead; keep this minimal
+      if (window.Swiper) {
+        document.querySelectorAll('.init-swiper').forEach(wrapper => {
+          // config is embedded in <script type="application/json" class="swiper-config"> inside the wrapper
+          const configEl = wrapper.querySelector('.swiper-config');
+          let cfg = {};
+          try { cfg = JSON.parse(configEl && configEl.textContent || '{}'); } catch (e) {}
+          const container = wrapper.querySelector('.swiper-wrapper').parentElement;
+          if (container && !container.classList.contains('swiper-initialized')) {
+            new Swiper(container, cfg);
+          }
+        });
+      }
+    })();
+  </script>
+  
+</body>
+
+</html>
