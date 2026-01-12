@@ -430,6 +430,7 @@ def complete_profile(request):
     account_type = request.session.get("account_type")
     if account_type=="freelancer":
             request.session['freelancer_id']=user_id
+            
     else:
             request.session['recruiter_id']=user_id
     if not user_id or account_type != "freelancer":
@@ -438,7 +439,7 @@ def complete_profile(request):
         return redirect("login_page")
 
     user = Freelancer.objects.get(id=user_id)
-
+    request.session['freelancer_email']=user.email
     if request.method == "POST":
         try:
 
