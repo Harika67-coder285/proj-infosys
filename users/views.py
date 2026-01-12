@@ -327,14 +327,19 @@ def register_user(request):
             OTP.objects.create(email=email, code=otp_code)
 
             # Send OTP email
+            
+            subject = "SkillConnect OTP Verification"
+            message = f"Hello {full_name},\nYour OTP for SkillConnect signup is: {otp_code}"
+            recipient_list = [email]
+            
+            # Send OTP via Brevo API
             send_mail(
-                subject="SkillConnect OTP Verification",
-                message=f"Hello {full_name},\nYour OTP for SkillConnect signup is: {otp_code}",
+                subject=subject,
+                message=message,
                 from_email="noreply@skillconnect.com",
-                recipient_list=[email],
-                fail_silently=False,
+                recipient_list=recipient_list,
+                fail_silently=False
             )
-
             return JsonResponse({"status": "success", "email": email})
 
         except Exception as e:
