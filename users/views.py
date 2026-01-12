@@ -256,6 +256,16 @@ import re
 from django.http import JsonResponse
 
 
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from django.contrib.auth.hashers import make_password
+from django.core.mail import send_mail
+from django.utils import timezone
+from datetime import timedelta
+import random
+
+from users.models import Freelancer, Recruiter, OTP
+
 @csrf_exempt
 def register_user(request):
     if request.method == "POST" and request.headers.get("X-Requested-With") == "XMLHttpRequest":
@@ -287,8 +297,8 @@ def register_user(request):
         try:
             hashed_password = make_password(password)
 
+            # Create user
             if account_type == "freelancer":
-                # Optional: calculate service fee if you want
                 SERVICE_FEE_PERCENT = 10
                 expected_hourly_rate = float(hourly_rate) if hourly_rate else 0
                 service_fee = expected_hourly_rate * SERVICE_FEE_PERCENT / 100
@@ -311,7 +321,6 @@ def register_user(request):
                     photo=photo,
                     is_active=False
                 )
-
             elif account_type == "recruiter":
                 user = Recruiter.objects.create(
                     full_name=full_name,
@@ -324,28 +333,26 @@ def register_user(request):
 
             # Generate OTP
             otp_code = str(random.randint(100000, 999999))
-            OTP.objects.create(email=email, code=otp_code)
+            OTP.objects.create(email=email, code=otp_code, created_at=timezone.now())
 
-            # Send OTP email
-            
-            subject = "SkillConnect OTP Verification"
-            message = f"Hello {full_name},\nYour OTP for SkillConnect signup is: {otp_code}"
-            recipient_list = [email]
-            
-            # Send OTP via Brevo API
+            # Send OTP via AnyMail (Brevo)
             send_mail(
-                subject=subject,
-                message=message,
+                subject="SkillConnect OTP Verification",
+                message=f"Hello {full_name},\nYour OTP for SkillConnect signup is: {otp_code}",
                 from_email="noreply@skillconnect.com",
-                recipient_list=recipient_list,
+                recipient_list=[email],
                 fail_silently=False
             )
-            return JsonResponse({"status": "success", "email": email})
+
+            # Return success
+            return JsonResponse({"status": "success"})
 
         except Exception as e:
+            # Catch any error (like file upload or email sending)
             return JsonResponse({"status": "error", "message": str(e)})
 
     return JsonResponse({"status": "error", "message": "Invalid request."})
+
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import check_password
