@@ -120,10 +120,16 @@
       <input type="email" name="email" class="form-control" required>
     </div>
 
-    <div class="mb-3">
-      <label class="form-label">Password</label>
-      <input type="password" name="password" class="form-control" required>
-    </div>
+   <div class="mb-3">
+  <label class="form-label">Password</label>
+  <div class="input-group">
+    <input type="password" name="password" id="loginPassword" class="form-control" required>
+    <span class="input-group-text" style="cursor:pointer;" onclick="toggleLoginPassword()">
+      <i id="loginEyeIcon" class="bi bi-eye"></i>
+    </span>
+  </div>
+</div>
+
 <div class="text-end mt-2">
   <a href="{% url 'forgot_password' %}" class="text-decoration-none">
     Forgot password?
@@ -145,5 +151,22 @@
 </div>
 
 <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script>
+function toggleLoginPassword() {
+    const input = document.getElementById("loginPassword");
+    const icon = document.getElementById("loginEyeIcon");
+
+    if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove("bi-eye");
+        icon.classList.add("bi-eye-slash");
+    } else {
+        input.type = "password";
+        icon.classList.remove("bi-eye-slash");
+        icon.classList.add("bi-eye");
+    }
+}
+</script>
+
 </body>
 </html>
