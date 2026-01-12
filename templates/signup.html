@@ -150,28 +150,29 @@
 <script>
   const form = document.getElementById("registerForm");
 
-  form.addEventListener("submit", async function(e) {
+form.addEventListener("submit", async function(e) {
     e.preventDefault();
     if (!form.checkValidity()) return;
 
     const formData = new FormData(form);
 
     const response = await fetch("{% url 'register_user' %}", {
-      method: "POST",
-      body: formData,
-      headers: { "X-Requested-With": "XMLHttpRequest" }
+        method: "POST",
+        body: formData,
+        headers: { "X-Requested-With": "XMLHttpRequest" }
     });
 
     const result = await response.json();
 
     if (result.status !== "success") {
-      alert(result.message || "Registration failed");
-      return;
+        alert(result.message || "Registration failed");
+        return;
     }
 
-    const email = formData.get("email");
-    window.location.href = "{% url 'verify_otp_page' %}?email=" + encodeURIComponent(email);
-  });
+    // Use the email returned from server for redirect
+    window.location.href = "{% url 'verify_otp_page' %}?email=" + encodeURIComponent(result.email);
+});
+
 </script>
 
 </body>
