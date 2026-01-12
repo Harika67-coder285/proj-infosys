@@ -62,15 +62,16 @@ body{
     font-size:1.1rem;
 }
 
-/* Message */
-#msg{
-    font-weight:600;
+/* Shake animation */
+.shake{
+  animation:shake .3s;
 }
-
-/* Resend */
-.resend{
-    margin-top:20px;
-    font-size:14px;
+@keyframes shake{
+  0%{transform:translateX(0)}
+  25%{transform:translateX(-6px)}
+  50%{transform:translateX(6px)}
+  75%{transform:translateX(-6px)}
+  100%{transform:translateX(0)}
 }
 </style>
 </head>
@@ -80,7 +81,6 @@ body{
 <div class="otp-wrapper">
   <div class="otp-card">
 
-    <!-- Header -->
     <div class="text-center mb-4">
       <h4>Verify Your Email</h4>
       <p class="text-muted">
@@ -89,13 +89,20 @@ body{
       </p>
     </div>
 
-    <!-- Form -->
     <form id="otpForm">
       {% csrf_token %}
       <input type="hidden" id="email" value="{{ email }}">
 
       <div class="mb-4">
-        <input type="text" id="otp" maxlength="6" required class="form-control">
+        <input 
+          type="text"
+          id="otp"
+          maxlength="6"
+          inputmode="numeric"
+          autocomplete="one-time-code"
+          class="form-control"
+          placeholder="------"
+          required>
       </div>
 
       <button type="submit" class="verify-btn w-100">
@@ -103,10 +110,9 @@ body{
       </button>
     </form>
 
-    <div id="msg" class="text-center mt-3"></div>
+    <div id="msg" class="text-center mt-3 fw-semibold"></div>
 
-    <!-- Resend -->
-    <div class="text-center resend">
+    <div class="text-center mt-4">
       Didn’t receive the code?<br>
       <button id="resendBtn" class="btn btn-link fw-bold" disabled>
         Resend OTP (<span id="timer">30</span>s)
@@ -117,24 +123,44 @@ body{
 </div>
 
 <script>
-/* CSRF helper */
 function getCookie(name){
-  let value=null;
+  let v=null;
   if(document.cookie){
     document.cookie.split(";").forEach(c=>{
       c=c.trim();
-      if(c.startsWith(name+"=")) value=decodeURIComponent(c.substring(name.length+1));
+      if(c.startsWith(name+"=")) v=decodeURIComponent(c.substring(name.length+1));
     });
   }
-  return value;
+  return v;
 }
 const csrftoken=getCookie("csrftoken");
 
-/* Submit OTP */
-document.getElementById("otpForm").onsubmit=async function(e){
+const otpInput=document.getElementById("otp");
+otpInput.focus();
+
+/* Numbers only + auto submit */
+otpInput.addEventListener("input",()=>{
+  otpInput.value=otpInput.value.replace(/[^0-9]/g,"");
+  if(otpInput.value.length===6){
+    document.getElementById("otpForm").requestSubmit();
+  }
+});
+
+/* Paste support */
+otpInput.addEventListener("paste",e=>{
+  e.preventDefault();
+  const text=(e.clipboardData||window.clipboardData).getData("text");
+  otpInput.value=text.replace(/\D/g,"").slice(0,6);
+  if(otpInput.value.length===6){
+    document.getElementById("otpForm").requestSubmit();
+  }
+});
+
+/* Submit */
+document.getElementById("otpForm").onsubmit=async e=>{
   e.preventDefault();
   const email=document.getElementById("email").value;
-  const otp=document.getElementById("otp").value;
+  const otp=otpInput.value;
 
   const res=await fetch("{% url 'verify_otp' %}",{
     method:"POST",
@@ -150,10 +176,13 @@ document.getElementById("otpForm").onsubmit=async function(e){
 
   if(result.status==="success"){
     setTimeout(()=>window.location.href="/"+result.redirect_url+"/",1000);
+  }else{
+    otpInput.classList.add("shake");
+    setTimeout(()=>otpInput.classList.remove("shake"),300);
   }
 };
 
-/* Resend OTP */
+/* Resend */
 let timeLeft=30;
 const resendBtn=document.getElementById("resendBtn");
 const timer=document.getElementById("timer");
