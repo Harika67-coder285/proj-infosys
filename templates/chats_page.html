@@ -3,10 +3,10 @@
 <head>
     <title>Messages</title>
 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
@@ -18,14 +18,16 @@
         .container {
             display: flex;
             height: 100vh;
+            overflow: hidden;
         }
 
-        /* ===== LEFT PANEL ===== */
+        /* LEFT PANEL */
         .chat-list {
             width: 28%;
             background: #ffffff;
             border-right: 1px solid #e5e7eb;
             overflow-y: auto;
+            transition: transform 0.3s ease;
         }
 
         .chat-list-header {
@@ -41,18 +43,14 @@
             border-bottom: 1px solid #f1f5f9;
         }
 
-        .chat-item:hover {
-            background: #f8fafc;
-        }
+        .chat-item:hover { background: #f8fafc; }
 
         .chat-item.active {
             background: #eef2ff;
             border-left: 4px solid #4f46e5;
         }
 
-        .chat-name {
-            font-weight: 600;
-        }
+        .chat-name { font-weight: 600; }
 
         .last-message {
             font-size: 13px;
@@ -60,32 +58,42 @@
             margin-top: 4px;
         }
 
-        /* ===== RIGHT PANEL ===== */
+        /* RIGHT PANEL */
         .chat-window {
             width: 72%;
             display: flex;
             flex-direction: column;
+            background: #f9fafb;
+            transition: transform 0.3s ease;
         }
 
         .chat-header {
             background: #ffffff;
-            padding: 16px;
+            padding: 14px 16px;
             border-bottom: 1px solid #e5e7eb;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .back-btn {
+            display: none;
+            font-size: 18px;
+            cursor: pointer;
         }
 
         .messages {
             flex: 1;
             padding: 20px;
             overflow-y: auto;
-            background: #f9fafb;
         }
 
         .msg {
-            max-width: 65%;
+            max-width: 75%;
             padding: 10px 14px;
             margin-bottom: 10px;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 14px;
             line-height: 1.5;
         }
@@ -124,17 +132,43 @@
             color: white;
             border-radius: 6px;
             cursor: pointer;
-            font-weight: 500;
-        }
-
-        .input-box button:hover {
-            background: #4338ca;
         }
 
         .empty {
             margin: auto;
             color: #6b7280;
             font-size: 16px;
+        }
+
+        /* MOBILE */
+        @media (max-width: 768px) {
+            .chat-list {
+                width: 100%;
+                position: absolute;
+                height: 100%;
+                z-index: 10;
+            }
+
+            .chat-window {
+                width: 100%;
+                position: absolute;
+                height: 100%;
+                transform: translateX(100%);
+                z-index: 20;
+                background: #f9fafb;
+            }
+
+            .chat-window.active {
+                transform: translateX(0);
+            }
+
+            .chat-list.hidden {
+                transform: translateX(-100%);
+            }
+
+            .back-btn {
+                display: block;
+            }
         }
     </style>
 </head>
@@ -144,12 +178,12 @@
 <div class="container">
 
     <!-- LEFT PANEL -->
-    <div class="chat-list">
+    <div class="chat-list" id="chatList">
         <div class="chat-list-header">Messages</div>
 
         {% for chat in chats %}
         <div class="chat-item {% if selected_chat and chat.id == selected_chat.id %}active{% endif %}"
-             onclick="window.location.href='/chats/{{ chat.id }}/'">
+             onclick="openChat('{{ chat.id }}')">
 
             <div class="chat-name">
                 {% if current_user_type == 'freelancer' %}
@@ -167,31 +201,30 @@
     </div>
 
     <!-- RIGHT PANEL -->
-    <div class="chat-window">
+    <div class="chat-window {% if selected_chat %}active{% endif %}" id="chatWindow">
 
         {% if selected_chat %}
+        <div class="chat-header">
+            <span class="back-btn" onclick="goBack()">←</span>
+            {% if current_user_type == 'freelancer' %}
+                {{ selected_chat.recruiter.full_name }}
+            {% else %}
+                {{ selected_chat.freelancer.full_name }}
+            {% endif %}
+        </div>
 
-            <div class="chat-header">
-                {% if current_user_type == 'freelancer' %}
-                    {{ selected_chat.recruiter.full_name }}
-                {% else %}
-                    {{ selected_chat.freelancer.full_name }}
-                {% endif %}
+        <div class="messages" id="messages">
+            {% for msg in messages %}
+            <div class="msg {% if msg.sender_type == current_user_type %}sent{% else %}received{% endif %}">
+                {{ msg.text }}
             </div>
+            {% endfor %}
+        </div>
 
-            <div class="messages" id="messages">
-                {% for msg in messages %}
-                    <div class="msg {% if msg.sender_type == current_user_type %}sent{% else %}received{% endif %}">
-                        {{ msg.text }}
-                    </div>
-                {% endfor %}
-            </div>
-
-            <div class="input-box">
-                <input type="text" id="messageInput" placeholder="Type your message...">
-                <button onclick="sendMessage()">Send</button>
-            </div>
-
+        <div class="input-box">
+            <input type="text" id="messageInput" placeholder="Type your message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
         {% else %}
             <div class="empty">Select a conversation to start messaging</div>
         {% endif %}
@@ -201,24 +234,13 @@
 </div>
 
 <script>
-function sendMessage() {
-    const input = document.getElementById("messageInput");
-    const text = input.value.trim();
-    if (!text) return;
+function openChat(chatId){
+    window.location.href = "/chats/" + chatId + "/";
+}
 
-    fetch("/send-message/", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            "X-CSRFToken": "{{ csrf_token }}"
-        },
-        body: new URLSearchParams({
-            chat_id: "{{ selected_chat.id }}",
-            sender_type: "{{ current_user_type }}",
-            sender_id: "{{ current_user_id }}",
-            text: text
-        })
-    }).then(() => location.reload());
+function goBack(){
+    document.getElementById("chatWindow").classList.remove("active");
+    document.getElementById("chatList").classList.remove("hidden");
 }
 </script>
 
