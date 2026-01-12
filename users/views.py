@@ -178,7 +178,10 @@ def verify_otp(request):
 
         request.session['user_id'] = user.id
         request.session['account_type'] = account_type
-
+        if account_type="freelancer":
+            request.session['freelancer_id']=user.id
+        else:
+            request.session['recruiter_id']=user.id
         otp_record.delete()
 
         return JsonResponse({
