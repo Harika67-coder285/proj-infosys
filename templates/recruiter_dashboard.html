@@ -471,7 +471,106 @@ body {
 .dropdown-menu li a{
     color:black !important;
 }
+#chat-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg,rgb(225, 165, 12),#d8e91b);
+    color: #fff;
+    font-size: 26px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    cursor: pointer;
+}
 
+#chatbox {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);   /* perfect center */
+    
+    width: 380px;
+    max-width: 90%;
+    height: 70vh;
+
+    display: none;
+    flex-direction: column;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+    overflow: hidden;
+    z-index: 9999;
+}
+
+
+
+#chat-header {
+    background: rgb(225, 165, 12);;
+    color: white;
+    padding: 14px;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+#messages {
+    flex: 1;
+    padding: 12px;
+    overflow-y: auto;
+    background: #f9fafb;
+}
+
+
+
+.msg {
+    padding: 10px 14px;
+    border-radius: 14px;
+    margin-bottom: 8px;
+    max-width: 80%;
+}
+.user {
+    background: rgb(225, 165, 12);;
+    color: white;
+    margin-left: auto;
+}
+.bot {
+    background: #e5e7eb;
+}
+
+
+#messages {
+    scroll-behavior: smooth;
+}
+.msg {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+#input-area {
+    display: flex;
+    border-top: 1px solid #ddd;
+    background: white;
+}
+
+#user_input {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    outline: none;
+}
+
+#send_btn {
+    padding: 12px 18px;
+    border: none;
+    background: rgb(225, 165, 12);;
+    color: white;
+    cursor: pointer;
+}
   </style>
 </head>
 
@@ -610,6 +709,21 @@ body {
               <div class="card chart-container" id="proposalChartContainer"></div>
             </div>
           </div>
+  <button id="chat-btn">💬</button>
+<div id="chatbox">
+    <div id="chat-header">
+        <a href="{% url 'dashboard' %}" class="back-arrow">←</a>
+        Support Chat
+        <span id="close-chat" style="cursor: pointer;">×</span>
+    </div>
+
+    <div id="messages"></div>
+
+    <div id="input-area">
+        <input id="user_input" type="text" placeholder="Ask a question..." />
+        <button id="send_btn">Send</button>
+    </div>
+</div>
 </div>
 
 
