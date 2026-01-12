@@ -335,7 +335,7 @@ def register_user(request):
                 fail_silently=False,
             )
 
-            return JsonResponse({"status": "success"})
+            return JsonResponse({"status": "success", "email": email})
 
         except Exception as e:
             return JsonResponse({"status": "error", "message": str(e)})
