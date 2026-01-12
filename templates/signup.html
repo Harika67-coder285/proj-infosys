@@ -129,11 +129,15 @@
       <input type="email" name="email" class="form-control" required>
     </div>
 
-    <!-- PASSWORD -->
-    <div class="mb-3">
-      <label class="form-label">Password</label>
-      <input type="password" name="password" class="form-control" required>
-    </div>
+<div class="mb-3">
+  <label class="form-label">Password</label>
+  <div class="input-group">
+    <input type="password" name="password" id="passwordInput" class="form-control" required>
+    <span class="input-group-text" style="cursor:pointer;" onclick="togglePassword()">
+      <i id="eyeIcon" class="bi bi-eye"></i>
+    </span>
+  </div>
+</div>
 
     <button class="btn btn-register w-100 mt-2">Sign Up</button>
 
@@ -148,6 +152,20 @@
 <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
 <script>
+  function togglePassword() {
+    const password = document.getElementById("passwordInput");
+    const icon = document.getElementById("eyeIcon");
+
+    if (password.type === "password") {
+        password.type = "text";
+        icon.classList.remove("bi-eye");
+        icon.classList.add("bi-eye-slash");
+    } else {
+        password.type = "password";
+        icon.classList.remove("bi-eye-slash");
+        icon.classList.add("bi-eye");
+    }
+}
   const form = document.getElementById("registerForm");
 
 form.addEventListener("submit", async function(e) {
