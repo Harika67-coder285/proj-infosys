@@ -214,7 +214,7 @@ def resend_otp(request):
             # Send OTP email
             send_mail(
                 subject="SkillConnect OTP Verification",
-                message=f"Hello {full_name},\nYour OTP for SkillConnect signup is: {otp_code}\nThis is valid for only 30 seconds.",
+                message=f"Hello ,\nYour OTP for SkillConnect signup is: {otp_code}\nThis is valid for only 30 seconds.",
                 from_email=settings.EMAIL_HOST_USER,
                 recipient_list=[email],
                 fail_silently=False
