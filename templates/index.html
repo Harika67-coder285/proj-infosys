@@ -227,6 +227,63 @@
 .dropdown-menu li a{
     color:black !important;
 }
+  /* ===========================
+   HERO LAYOUT FIX
+=========================== */
+
+#hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+.hero .container {
+  position: relative;
+  z-index: 3;
+}
+
+.hero-content {
+  max-width: 560px;
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.hero ul {
+  padding-left: 1.2rem;
+}
+
+.hero ul li {
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  margin-bottom: 10px;
+}
+
+.hero-buttons {
+  margin-top: 35px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+/* Center content on mobile */
+@media (max-width: 991px) {
+  .hero .row {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .hero-content {
+    margin: auto;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+  }
+}
+
 </style>
 </head>
 
@@ -366,7 +423,7 @@
   <div class="container position-relative" data-aos="fade-up" data-aos-delay="100">
     <div class="row align-items-center">
       <div class="col-lg-6">
-        <div class="hero-content text-white" data-aos="fade-up" data-aos-delay="200" style="margin-top:5%">
+        <div class="hero-content text-white" data-aos="fade-up" data-aos-delay="200">
 
           <h1 class="mb-1" style="color:rgb(225, 165, 12)">
             Hire the best freelancers for any job, online.
@@ -382,16 +439,15 @@
          
 
           <div class="hero-buttons">
-            <a href="{% url 'register_page' %}"
-               class="me-0 me-sm-2 mx-1" style="border-radius:5px;font-size: 18px; padding:20px 25px;background-color:rgb(225, 165, 12);color:white;font-weight: bold;">
-              Hire a Freelancer
-            </a>
+  <a href="{% url 'register_page' %}" class="btn btn-warning btn-lg px-4">
+    Hire a Freelancer
+  </a>
 
-            <a href="{% url 'register_page' %}"
-               class="btn-hover btn btn-link mt-2 mt-sm-0" style="border-radius:5px;font-size: 18px; padding:12px 25px;color:white;font-weight: bold;"> 
-              <span>Start Freelancing</span>
-            </a>
-          </div>
+  <a href="{% url 'register_page' %}" class="btn btn-outline-light btn-lg px-4">
+    Start Freelancing
+  </a>
+</div>
+
 
         </div>
       </div>
