@@ -214,17 +214,10 @@ def resend_otp(request):
             # Send OTP email
             send_mail(
                 subject="SkillConnect OTP Verification",
-                message=(
-                    f"Hello,\n\n"
-                    f"Your OTP for SkillConnect verification is:\n\n"
-                    f"{otp_code}\n\n"
-                    f"This OTP is valid for 30 seconds.\n\n"
-                    f"Do not share this OTP with anyone.\n\n"
-                    f"— SkillConnect Team"
-                ),
+                message=f"Hello {full_name},\nYour OTP for SkillConnect signup is: {otp_code}\nThis is valid for only 30 seconds.",
                 from_email=settings.EMAIL_HOST_USER,
                 recipient_list=[email],
-                fail_silently=False,
+                fail_silently=False
             )
 
             return JsonResponse({
@@ -422,7 +415,7 @@ def register_user(request):
             # Send OTP via AnyMail (Brevo)
             send_mail(
                 subject="SkillConnect OTP Verification",
-                message=f"Hello {full_name},\nYour OTP for SkillConnect signup is: {otp_code}",
+                message=f"Hello {full_name},\nYour OTP for SkillConnect signup is: {otp_code}\nThis is valid for only 30 seconds.",
                 from_email=settings.EMAIL_HOST_USER,
                 recipient_list=[email],
                 fail_silently=False
