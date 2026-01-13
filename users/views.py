@@ -348,7 +348,7 @@ def register_user(request):
                     font_path = None
             
                 # Start with font_size = img_size (max possible)
-                font_size = img_size
+                font_size = 600
                 while font_size > 0:
                     try:
                         font = ImageFont.truetype(font_path, font_size) if font_path else ImageFont.load_default()
