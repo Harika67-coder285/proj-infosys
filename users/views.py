@@ -222,7 +222,7 @@ def resend_otp(request):
                     f"Do not share this OTP with anyone.\n\n"
                     f"— SkillConnect Team"
                 ),
-                from_email="projectsinfo697@gmail.com",
+                from_email=settings.EMAIL_HOST_USER,
                 recipient_list=[email],
                 fail_silently=False,
             )
@@ -325,65 +325,61 @@ def register_user(request):
                     is_active=False
                 )
             elif account_type == "recruiter":
-                from PIL import Image, ImageDraw, ImageFont
-                from io import BytesIO
-                from django.core.files.base import ContentFile
-            
-                # First letter of full name
-                first_letter = full_name[0].upper()
-            
-                # Image settings
-                img_size = 200
-                bg_color = "#E1A50C"   # SkillConnect brand color
-                text_color = "#FFFFFF"
-            
-                # Create image
-                img = Image.new("RGB", (img_size, img_size), bg_color)
-                draw = ImageDraw.Draw(img)
-            
-                # Load font
-                try:
-                    font_path = "arial.ttf"  # Replace with any TTF font path you have
-                except:
-                    font_path = None
-            
-                # Start with font_size = img_size (max possible)
-                font_size = 600
-                while font_size > 0:
-                    try:
-                        font = ImageFont.truetype(font_path, font_size) if font_path else ImageFont.load_default()
-                    except:
-                        font = ImageFont.load_default()
-            
-                    bbox = draw.textbbox((0, 0), first_letter, font=font)
-                    text_width = bbox[2] - bbox[0]
-                    text_height = bbox[3] - bbox[1]
-            
-                    # Fit text with 10% padding
-                    if text_width < img_size * 0.9 and text_height < img_size * 0.9:
-                        break
-                    font_size -= 2
-            
-                # Center the letter
-                x = (img_size - text_width) / 2
-                y = (img_size - text_height) / 2
-            
-                # Draw the letter
-                draw.text((x, y), first_letter, fill=text_color, font=font)
-            
-                # Save image to memory
-                img_io = BytesIO()
-                img.save(img_io, format="PNG")
-                img_content = ContentFile(img_io.getvalue(), f"{email}_avatar.png")
-            
-                # Create recruiter with avatar
-                user = Recruiter.objects.create(
-                    full_name=full_name,
-                    email=email,
-                    password=hashed_password,
-                    photo=img_content,
-                    is_active=False
-                )
+               from PIL import Image, ImageDraw, ImageFont
+               from io import BytesIO
+               from django.core.files.base import ContentFile
+               from django.conf import settings
+               import os
+           
+               # First letter of recruiter name
+               first_letter = full_name[0].upper()
+           
+               # Avatar settings
+               img_size = 200
+               bg_color = "#E1A50C"   # SkillConnect brand color
+               text_color = "#FFFFFF"
+           
+               # Create square image
+               img = Image.new("RGB", (img_size, img_size), bg_color)
+               draw = ImageDraw.Draw(img)
+           
+               # Load Roboto font from project
+               font_path = os.path.join(settings.BASE_DIR, "static", "fonts", "Roboto-Regular.ttf")
+           
+               # Find maximum font size that fits
+               font_size = img_size
+               while font_size > 0:
+                   font = ImageFont.truetype(font_path, font_size)
+                   bbox = draw.textbbox((0, 0), first_letter, font=font)
+           
+                   text_width = bbox[2] - bbox[0]
+                   text_height = bbox[3] - bbox[1]
+           
+                   if text_width < img_size * 0.9 and text_height < img_size * 0.9:
+                       break
+                   font_size -= 2
+           
+               # Center the letter
+               x = (img_size - text_width) / 2
+               y = (img_size - text_height) / 2
+           
+               # Draw the letter
+               draw.text((x, y), first_letter, fill=text_color, font=font)
+           
+               # Save avatar to memory
+               img_io = BytesIO()
+               img.save(img_io, format="PNG")
+               img_content = ContentFile(img_io.getvalue(), f"{email}_avatar.png")
+           
+               # Create recruiter with generated avatar
+               user = Recruiter.objects.create(
+                   full_name=full_name,
+                   email=email,
+                   password=hashed_password,
+                   photo=img_content,
+                   is_active=False
+               )
+
             
 
 
@@ -398,7 +394,7 @@ def register_user(request):
             send_mail(
                 subject="SkillConnect OTP Verification",
                 message=f"Hello {full_name},\nYour OTP for SkillConnect signup is: {otp_code}",
-                from_email="projectsinfo697@gmail.com",
+                from_email=settings.EMAIL_HOST_USER,
                 recipient_list=[email],
                 fail_silently=False
             )
