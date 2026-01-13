@@ -216,20 +216,24 @@ document.getElementById("otpForm").onsubmit = async e => {
 
 // Resend OTP timer
 let t = 30;
-const timer = document.getElementById("timer");
-const resendBtn = document.getElementById("resendBtn");
 let interval;
+const resendBtn = document.getElementById("resendBtn");
 
 function startTimer() {
   resendBtn.disabled = true;
-  clearInterval(interval); // clear previous interval if exists
+  clearInterval(interval);
+
   interval = setInterval(() => {
     t--;
-    timer.innerText = t;
+
+    // Always re-fetch the span (important!)
+    const timerSpan = document.getElementById("timer");
+    if (timerSpan) timerSpan.innerText = t;
+
     if (t <= 0) {
       clearInterval(interval);
       resendBtn.disabled = false;
-      timer.innerText = 0;
+      if (timerSpan) timerSpan.innerText = 0;
     }
   }, 1000);
 }
@@ -239,6 +243,7 @@ startTimer();
 resendBtn.onclick = async () => {
   resendBtn.disabled = true;
   resendBtn.innerText = "Sending...";
+
   const email = document.getElementById("email").value;
 
   await fetch("{% url 'resend_otp' %}", {
@@ -250,11 +255,13 @@ resendBtn.onclick = async () => {
     body: new URLSearchParams({ email })
   });
 
-  // Reset timer
+  // Rebuild button
   t = 30;
   resendBtn.innerHTML = `Resend OTP (<span id="timer">${t}</span>s)`;
+
   startTimer();
 };
+
 </script>
 
 </body>
