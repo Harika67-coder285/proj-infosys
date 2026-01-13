@@ -46,14 +46,16 @@ body {
 
 .otp-boxes {
   display: flex;
-  justify-content: center;
+  justify-content: space-between; /* Spread boxes evenly */
   gap: 10px;
   margin: 25px 0;
-  flex-wrap: nowrap; /* Always in one row */
+  flex-wrap: nowrap; /* keep all 6 boxes in one row */
 }
 
 .otp-box {
-  flex: 1 1 clamp(40px, 12vw, 60px);
+  flex: 1 1 0;       /* Equal width for all boxes */
+  max-width: 60px;   /* Limit max width */
+  min-width: 40px;   /* Limit min width */
   height: clamp(50px, 12vw, 65px);
   font-size: clamp(20px, 4vw, 28px);
   text-align: center;
@@ -61,7 +63,6 @@ body {
   border: 2px solid rgb(225,165,12);
   outline: none;
   font-weight: 700;
-  max-width: 60px;
 }
 
 .otp-box:focus {
@@ -217,19 +218,22 @@ document.getElementById("otpForm").onsubmit = async e => {
 let t = 30;
 const timer = document.getElementById("timer");
 const resendBtn = document.getElementById("resendBtn");
+let interval;
 
 function startTimer() {
   resendBtn.disabled = true;
-  const interval = setInterval(() => {
+  clearInterval(interval); // clear previous interval if exists
+  interval = setInterval(() => {
     t--;
     timer.innerText = t;
     if (t <= 0) {
       clearInterval(interval);
       resendBtn.disabled = false;
-      resendBtn.innerText = "Resend OTP";
+      timer.innerText = 0;
     }
   }, 1000);
 }
+
 startTimer();
 
 resendBtn.onclick = async () => {
@@ -246,8 +250,8 @@ resendBtn.onclick = async () => {
     body: new URLSearchParams({ email })
   });
 
+  // Reset timer
   t = 30;
-  timer.innerText = t;
   resendBtn.innerHTML = `Resend OTP (<span id="timer">${t}</span>s)`;
   startTimer();
 };
