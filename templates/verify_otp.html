@@ -46,24 +46,25 @@ body{
 
 .otp-boxes{
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
+  justify-content: center;
+  gap: clamp(8px, 3vw, 16px);
   margin: 25px 0;
-  flex-wrap: wrap; /* wrap on small screens */
+  flex-wrap: wrap;
 }
 
+
 .otp-box{
-  flex: 1 1 45px; /* grow/shrink */
-  min-width: 45px;
-  max-width: 55px;
-  height: 65px;
-  font-size: 28px;
+  width: clamp(48px, 12vw, 70px);
+  height: clamp(55px, 14vw, 75px);
+  font-size: clamp(22px, 5vw, 32px);
   text-align: center;
-  border-radius: 12px;
+  border-radius: 14px;
   border: 2px solid rgb(225,165,12);
   outline: none;
-  font-weight: 600;
+  font-weight: 700;
+  flex-shrink: 0;
 }
+
 
 .otp-box:focus{
   box-shadow: 0 0 0 3px rgba(225,165,12,.25);
