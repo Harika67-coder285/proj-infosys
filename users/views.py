@@ -1,4 +1,4 @@
-
+ 
 import random
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
@@ -328,50 +328,54 @@ def register_user(request):
                 from PIL import Image, ImageDraw, ImageFont
                 from io import BytesIO
                 from django.core.files.base import ContentFile
-                
-                # First letter
+            
+                # First letter of full name
                 first_letter = full_name[0].upper()
-                
+            
+                # Image settings
                 img_size = 200
                 bg_color = "#E1A50C"   # SkillConnect brand color
                 text_color = "#FFFFFF"
-                
+            
                 # Create image
                 img = Image.new("RGB", (img_size, img_size), bg_color)
                 draw = ImageDraw.Draw(img)
-                
-                # Try to load a TTF font
+            
+                # Load font
                 try:
-                    font_path = "arial.ttf"  # you can use any TTF you have
-                    font_size = 165          # start big
-                    font = ImageFont.truetype(font_path, font_size)
+                    font_path = "arial.ttf"  # Replace with any TTF font path you have
                 except:
-                    font = ImageFont.load_default()
-                
-                # Dynamically shrink font if too big
-                while True:
+                    font_path = None
+            
+                # Start with font_size = img_size (max possible)
+                font_size = img_size
+                while font_size > 0:
+                    try:
+                        font = ImageFont.truetype(font_path, font_size) if font_path else ImageFont.load_default()
+                    except:
+                        font = ImageFont.load_default()
+            
                     bbox = draw.textbbox((0, 0), first_letter, font=font)
                     text_width = bbox[2] - bbox[0]
                     text_height = bbox[3] - bbox[1]
-                
-                    if text_width < img_size * 0.8 and text_height < img_size * 0.8:
-                        break  # good size
-                    font_size -= 5
-                    if font_size <= 10:
+            
+                    # Fit text with 10% padding
+                    if text_width < img_size * 0.9 and text_height < img_size * 0.9:
                         break
-                    font = ImageFont.truetype(font_path, font_size)
-                
+                    font_size -= 2
+            
                 # Center the letter
                 x = (img_size - text_width) / 2
                 y = (img_size - text_height) / 2
-                
+            
+                # Draw the letter
                 draw.text((x, y), first_letter, fill=text_color, font=font)
-                
+            
                 # Save image to memory
                 img_io = BytesIO()
                 img.save(img_io, format="PNG")
                 img_content = ContentFile(img_io.getvalue(), f"{email}_avatar.png")
-                
+            
                 # Create recruiter with avatar
                 user = Recruiter.objects.create(
                     full_name=full_name,
@@ -380,6 +384,7 @@ def register_user(request):
                     photo=img_content,
                     is_active=False
                 )
+            
 
 
             else:
