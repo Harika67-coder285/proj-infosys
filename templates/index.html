@@ -532,7 +532,7 @@
     {% if freelancers %}
     <div class="freelancer-grid">
 
-      {% for f in freelancers %}
+      {% for f in freelancers|slice:":10" %}
         <div class="card text-center p-3 shadow-sm">
           {%if f.photo %}
      <img src="{{f.photo.url}}" class="rounded-circle mx-auto" style="width:40px;height:40px"> 
