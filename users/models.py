@@ -65,10 +65,14 @@ class Freelancer(models.Model):
         return self.full_name
 
 class Recruiter(models.Model):
-    full_name = models.CharField(max_length=255)
+    full_name = models.CharField(max_length=200)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
     is_active = models.BooleanField(default=False)
+
+    photo = models.ImageField(upload_to="recruiter_photos/", blank=True, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
 
 class OTP(models.Model):
     email = models.EmailField()
