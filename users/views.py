@@ -325,53 +325,82 @@ def register_user(request):
                     is_active=False
                 )
             elif account_type == "recruiter":
-               from PIL import Image, ImageDraw, ImageFont
+               from PIL import Image, ImageDraw, ImageFont, ImageFilter
                from io import BytesIO
                from django.core.files.base import ContentFile
                from django.conf import settings
                import os
-           
-               # First letter of recruiter name
-               first_letter = full_name[0].upper()
-           
-               # Avatar settings
+               
+               # Get initials (first letter only or first+last)
+               name_parts = full_name.strip().split()
+               if len(name_parts) >= 2:
+                   initials = name_parts[0][0] + name_parts[-1][0]
+               else:
+                   initials = name_parts[0][0]
+               initials = initials.upper()
+               
+               # Image size
                img_size = 300
-               bg_color = "#FFFFFF"   # SkillConnect brand color
-               text_color = "#000000"
-           
-               # Create square image
-               img = Image.new("RGB", (img_size, img_size), bg_color)
+               
+               # Create transparent image
+               img = Image.new("RGBA", (img_size, img_size), (0, 0, 0, 0))
                draw = ImageDraw.Draw(img)
-           
-               # Load Roboto font from project
+               
+               # Gradient colors (modern look)
+               top_color = (241, 196, 15)   # Gold
+               bottom_color = (243, 156, 18)
+               
+               # Create gradient
+               for y in range(img_size):
+                   ratio = y / img_size
+                   r = int(top_color[0] * (1 - ratio) + bottom_color[0] * ratio)
+                   g = int(top_color[1] * (1 - ratio) + bottom_color[1] * ratio)
+                   b = int(top_color[2] * (1 - ratio) + bottom_color[2] * ratio)
+                   draw.line([(0, y), (img_size, y)], fill=(r, g, b, 255))
+               
+               # Create circular mask
+               mask = Image.new("L", (img_size, img_size), 0)
+               mask_draw = ImageDraw.Draw(mask)
+               mask_draw.ellipse((0, 0, img_size, img_size), fill=255)
+               
+               # Apply mask (make it a circle)
+               circle_img = Image.new("RGBA", (img_size, img_size), (0, 0, 0, 0))
+               circle_img.paste(img, (0, 0), mask)
+               
+               # Load font
                font_path = os.path.join(settings.BASE_DIR, "static", "fonts", "Roboto-Regular.ttf")
-           
-               # Find maximum font size that fits
-               font_size = 200
-               while font_size > 0:
-                   font = ImageFont.truetype(font_path, font_size)
-                   bbox = draw.textbbox((0, 0), first_letter, font=font)
-           
-                   text_width = bbox[2] - bbox[0]
-                   text_height = bbox[3] - bbox[1]
-           
-                   if text_width < img_size * 0.9 and text_height < img_size * 0.9:
+               
+               font_size = 180
+               font = ImageFont.truetype(font_path, font_size)
+               
+               # Resize font if too big
+               while True:
+                   bbox = font.getbbox(initials)
+                   w = bbox[2] - bbox[0]
+                   h = bbox[3] - bbox[1]
+                   if w < img_size * 0.7 and h < img_size * 0.7:
                        break
-                   font_size -= 2
-           
-               # Center the letter
-               x = (img_size - text_width) / 2
-               y = (img_size - text_height) / 2
-           
-               # Draw the letter
-               draw.text((x, y), first_letter, fill=text_color, font=font)
-           
-               # Save avatar to memory
+                   font_size -= 4
+                   font = ImageFont.truetype(font_path, font_size)
+               
+               # Center text
+               x = (img_size - w) / 2
+               y = (img_size - h) / 2
+               
+               text_layer = Image.new("RGBA", (img_size, img_size), (0, 0, 0, 0))
+               text_draw = ImageDraw.Draw(text_layer)
+               
+               # Soft shadow
+               text_draw.text((x+4, y+4), initials, font=font, fill=(0, 0, 0, 100))
+               text_draw.text((x, y), initials, font=font, fill=(255, 255, 255, 255))
+               
+               final_img = Image.alpha_composite(circle_img, text_layer)
+               
+               # Save to Django
                img_io = BytesIO()
-               img.save(img_io, format="PNG")
+               final_img.save(img_io, format="PNG")
                img_content = ContentFile(img_io.getvalue(), f"{email}_avatar.png")
-           
-               # Create recruiter with generated avatar
+               
                user = Recruiter.objects.create(
                    full_name=full_name,
                    email=email,
