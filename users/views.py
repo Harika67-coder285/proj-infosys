@@ -335,9 +335,9 @@ def register_user(request):
                first_letter = full_name[0].upper()
            
                # Avatar settings
-               img_size = 200
-               bg_color = "#E1A50C"   # SkillConnect brand color
-               text_color = "#FFFFFF"
+               img_size = 300
+               bg_color = "#FFFFFF"   # SkillConnect brand color
+               text_color = "#000000"
            
                # Create square image
                img = Image.new("RGB", (img_size, img_size), bg_color)
@@ -347,7 +347,7 @@ def register_user(request):
                font_path = os.path.join(settings.BASE_DIR, "static", "fonts", "Roboto-Regular.ttf")
            
                # Find maximum font size that fits
-               font_size = img_size
+               font_size = 200
                while font_size > 0:
                    font = ImageFont.truetype(font_path, font_size)
                    bbox = draw.textbbox((0, 0), first_letter, font=font)
